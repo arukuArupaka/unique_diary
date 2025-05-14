@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import SuggestionSection from "../components/SuggestionSection";
 
 export default function Index() {
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
@@ -169,40 +170,10 @@ export default function Index() {
           </View>
         </View>
         {/*メモ提案機能仮 */}
-        <View style={{ padding: 10 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>今日のテーマ</Text>
-          <View
-            style={{
-              backgroundColor: "#f0f8ff",
-              borderRadius: 8,
-              padding: 15,
-              marginTop: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16 }}>今日笑ったこと</Text>
-          </View>
-          <View
-            style={{
-              backgroundColor: "#f0f8ff",
-              borderRadius: 8,
-              padding: 15,
-              marginTop: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16 }}>親との思い出</Text>
-          </View>
-          <View
-            style={{
-              backgroundColor: "#f0f8ff",
-              borderRadius: 8,
-              padding: 15,
-              marginTop: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16 }}>サークルやバイトの出来事</Text>
-          </View>
+        <View style={{ flex: 1 }}>
+          {/* 既存の入力エリアの下に追加するのが良い */}
+          <SuggestionSection />
         </View>
-
         {/* フッター部分 */}
         <View
           style={{
