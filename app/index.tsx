@@ -1,3 +1,4 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -11,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import SuggestionSection from "../components/SuggestionSection";
+//import SuggestionSection from "../components/SuggestionSection";
 
 export default function Index() {
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
@@ -31,6 +32,11 @@ export default function Index() {
   const month = now.getMonth() + 1;
   const day = now.getDate();
   const todayString = `${month}月${day}日`; // 今日の日付
+
+  const [suggestion, setsuggestion] = useState(false);
+  const handlePress = () => {
+    setsuggestion((prev) => !prev); // 押すたびに状態を反転
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -58,6 +64,9 @@ export default function Index() {
               color: "black",
               fontSize: 32,
               marginLeft: 15,
+              shadowOpacity: 0.2,
+              shadowRadius: 4,
+              elevation: 3,
             }}
           >
             {todayString} {/* 今日の日付を表示 */}
@@ -67,6 +76,9 @@ export default function Index() {
             size={31}
             color="black"
             style={{
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 3,
               marginTop: 3,
               marginLeft: "33%",
             }}
@@ -77,6 +89,11 @@ export default function Index() {
               height: 35,
               marginTop: 0,
               backgroundColor: "white",
+              shadowColor: "black",
+              //shadowOffset: { width: 0, height: 2 }, //影
+              shadowOpacity: 0.5,
+              shadowRadius: 4,
+              elevation: 3,
             }}
           >
             <View
@@ -116,6 +133,7 @@ export default function Index() {
             flex: 1,
             paddingHorizontal: 20,
             paddingTop: 40,
+            backgroundColor: "",
           }}
         >
           <Text
@@ -148,31 +166,89 @@ export default function Index() {
               alignItems: "center",
               justifyContent: "center",
               width: "100%",
+              borderColor: "#ccc",
+              borderWidth: 1,
+            }}
+          ></View>
+          {/*　提案機能のボタン */}
+
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              height: "25%",
+              backgroundColor: "",
             }}
           >
-            <TouchableOpacity
+            <View
               style={{
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "red",
-                width: "35%",
+                width: "87%",
+                height: "100%",
+                backgroundColor: "",
               }}
-              onPress={handleSave}
             >
-              <Text
+              {/*提案機能の文章自体*/}
+              {suggestion && (
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "red",
+                  }}
+                ></View>
+              )}
+            </View>
+            {/*ボタン自体*/}
+            <View
+              style={{
+                width: "15%",
+                height: "100%",
+                gap: "10%",
+                borderColor: "#ccc",
+                borderWidth: 0,
+                marginTop: "10%",
+                backgroundColor: "",
+              }}
+            >
+              <TouchableOpacity
                 style={{
-                  fontSize: 30,
+                  width: "100%",
+                  height: "40%",
+                  backgroundColor: "",
+                  borderRadius: 100,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowOpacity: 0.2,
+                  shadowRadius: 4,
+                  elevation: 3,
                 }}
               >
-                保存する
-              </Text>
-            </TouchableOpacity>
+                <View>
+                  <MaterialCommunityIcons
+                    name="restart"
+                    size={60}
+                    color="black"
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handlePress}
+                style={{
+                  width: "100%",
+                  height: "40%",
+                  backgroundColor: "",
+                  borderRadius: 100,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowOpacity: 0.2,
+                  shadowRadius: 4,
+                  elevation: 3,
+                }}
+              >
+                <AntDesign name="questioncircleo" size={50} color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        {/*メモ提案機能仮 */}
-        <View style={{ flex: 1 }}>
-          {/* 既存の入力エリアの下に追加するのが良い */}
-          <SuggestionSection />
         </View>
         {/* フッター部分 */}
         <View
@@ -204,6 +280,9 @@ export default function Index() {
                 height: 35,
                 marginTop: 0,
                 backgroundColor: "white",
+                shadowOpacity: 0.5,
+                shadowRadius: 4,
+                elevation: 3,
               }}
             >
               <View
@@ -244,6 +323,9 @@ export default function Index() {
               // backgroundColor: "white",
               alignItems: "center",
               justifyContent: "center", // 空文字は避ける
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 3,
             }}
           >
             <MaterialCommunityIcons
@@ -260,6 +342,9 @@ export default function Index() {
               //backgroundColor: "white", // 空文字は避ける
               alignItems: "center",
               justifyContent: "center",
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 3,
             }}
           >
             <Entypo name="list" size={46} color="black" />{" "}
