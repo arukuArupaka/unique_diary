@@ -21,6 +21,5 @@ export const suggestionThemes = {
     "大事にしている価値観",
     "親との思い出",
     "小学生のころ仲良かった人",
-    "",
   ],
 };

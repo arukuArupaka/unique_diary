@@ -2,7 +2,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import React, { useState } from "react";
+import { useSuggestion } from "../components/Suggestion_Section";
 import {
   Alert,
   Keyboard,
@@ -12,11 +14,11 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-//import SuggestionSection from "../components/SuggestionSection";
 
-export default function Index() {
+const Index = () => {
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
-
+  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
+    useSuggestion();
   const handleSave = () => {
     if (diaryText.trim() === "") {
       Alert.alert("エラー", "日記の内容を入力してください");
@@ -33,9 +35,9 @@ export default function Index() {
   const day = now.getDate();
   const todayString = `${month}月${day}日`; // 今日の日付
 
-  const [suggestion, setsuggestion] = useState(false);
+  const [suggestionwhole, setsuggestionwhole] = useState(false);
   const handlePress = () => {
-    setsuggestion((prev) => !prev); // 押すたびに状態を反転
+    setsuggestionwhole((prev) => !prev); // 押すたびに状態を反転
   };
 
   return (
@@ -127,7 +129,7 @@ export default function Index() {
           </View>
         </View>
 
-        {/* 日記入力エリア */}
+        {/* メイン画面*/}
         <View
           style={{
             flex: 1,
@@ -155,6 +157,10 @@ export default function Index() {
               backgroundColor: "#fff",
               marginBottom: 20,
               fontSize: 20,
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 3,
             }}
             placeholder="今日はどんな一日だった？"
             multiline
@@ -167,7 +173,7 @@ export default function Index() {
               justifyContent: "center",
               width: "100%",
               borderColor: "#ccc",
-              borderWidth: 1,
+              borderWidth: 0,
             }}
           ></View>
           {/*　提案機能のボタン */}
@@ -177,7 +183,6 @@ export default function Index() {
               flexDirection: "row",
               width: "100%",
               height: "25%",
-              backgroundColor: "",
             }}
           >
             <View
@@ -188,14 +193,48 @@ export default function Index() {
               }}
             >
               {/*提案機能の文章自体*/}
-              {suggestion && (
+              {suggestionwhole && (
                 <View
                   style={{
                     width: "100%",
                     height: "100%",
-                    backgroundColor: "red",
+                    backgroundColor: "#FFFFFF",
+                    borderColor: "#ccc",
+                    borderWidth: 0,
+                    borderRadius: 8,
+                    gap: 6,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                    elevation: 3,
+                    paddingHorizontal: "3%",
                   }}
-                ></View>
+                >
+                  {/*　
+                  
+                  
+                  お願いしますｍ（_ _）ｍ
+                
+                  ここ変えて↓ 
+                  
+                  
+                  */}
+                  {/*ランダムで変わる部分です。*/}
+                  <Text style={{ fontSize: 15, color: "red" }}>日々</Text>
+                  {/*↑これ消してもいい。色は仮見やすくしたいから */}
+
+                  <Text style={{ fontSize: 18 }}>{DailySuggestion}</Text>
+
+                  <Text style={{ fontSize: 15, color: "red" }}>大学生活</Text>
+                  {/*↑これ消してもいい */}
+
+                  <Text style={{ fontSize: 18 }}>{LifeSuggestion}</Text>
+
+                  <Text style={{ fontSize: 15, color: "red" }}>人生</Text>
+                  {/*↑これ消してもいい */}
+
+                  <Text style={{ fontSize: 18 }}> {CollegeSuggestion}</Text>
+                </View>
               )}
             </View>
             {/*ボタン自体*/}
@@ -211,6 +250,7 @@ export default function Index() {
               }}
             >
               <TouchableOpacity
+                onPress={handleSwap}
                 style={{
                   width: "100%",
                   height: "40%",
@@ -240,7 +280,7 @@ export default function Index() {
                   borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
-                  shadowOpacity: 0.2,
+                  shadowOpacity: 0.3,
                   shadowRadius: 4,
                   elevation: 3,
                 }}
@@ -249,7 +289,21 @@ export default function Index() {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/*連続記録*/}
+          <View
+            style={{
+              width: "100%",
+              height: "40%",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "",
+            }}
+          >
+            <FontAwesome5 name="fire" size={100} color="red" />
+          </View>
         </View>
+
         {/* フッター部分 */}
         <View
           style={{
@@ -354,4 +408,6 @@ export default function Index() {
       </View>
     </TouchableWithoutFeedback>
   );
-}
+};
+
+export default Index;
