@@ -5,6 +5,8 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import React, { useState } from "react";
 import { useSuggestion } from "../components/Suggestion_Section";
+import { Vibration } from "react-native";
+import * as Haptics from "expo-haptics";
 import {
   Alert,
   Keyboard,
@@ -14,7 +16,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-
 const Index = () => {
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
@@ -250,7 +251,10 @@ const Index = () => {
               }}
             >
               <TouchableOpacity
-                onPress={handleSwap}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handleSwap();
+                }}
                 style={{
                   width: "100%",
                   height: "40%",
@@ -272,7 +276,10 @@ const Index = () => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={handlePress}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handlePress();
+                }}
                 style={{
                   width: "100%",
                   height: "40%",
@@ -291,7 +298,10 @@ const Index = () => {
           </View>
 
           {/*連続記録*/}
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            }}
             style={{
               width: "100%",
               height: "40%",
@@ -301,7 +311,7 @@ const Index = () => {
             }}
           >
             <FontAwesome5 name="fire" size={100} color="red" />
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* フッター部分 */}
@@ -319,6 +329,9 @@ const Index = () => {
           }}
         >
           <TouchableOpacity
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            }}
             style={{
               width: "12%", // 適当な横幅に変更
               height: "60%",
@@ -370,6 +383,9 @@ const Index = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() =>
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+            }
             style={{
               width: "12%", // 適当な横幅に変更
               height: "60%",
@@ -389,11 +405,13 @@ const Index = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() =>
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+            }
             style={{
               width: "12%", // 適当な横幅に変更
               height: "60%",
               borderRadius: 10,
-              //backgroundColor: "white", // 空文字は避ける
               alignItems: "center",
               justifyContent: "center",
               shadowOpacity: 0.3,
@@ -411,3 +429,9 @@ const Index = () => {
 };
 
 export default Index;
+
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // 軽くトンッ（デフォルト）
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // もう少しだけ強く（おすすめ）
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // しっかり重めにブルッ
+
+//npx expo install expo-haptics(音に関する)
