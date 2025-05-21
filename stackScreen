@@ -1,0 +1,27 @@
+// import 'react-native-gesture-handler';
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+// import Index from './app/index';
+// import Second from './app/second'; // ステップ1で作った画面
+
+// export type RootStackParamList = {
+//   Index: undefined;
+//   Second: undefined;
+// };
+
+// const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// const App = () => {
+//   return (
+//     <NavigationContainer>
+//       <Stack.Navigator initialRouteName="Index">
+//         <Stack.Screen name="Index" component={Index} />
+//         <Stack.Screen name="Second" component={Second} />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// };
+
+// export default App;

@@ -1,12 +1,12 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import React, { useState } from "react";
-import { useSuggestion } from "../components/Suggestion_Section";
-import { Vibration } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -16,7 +16,10 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSuggestion } from "../components/Suggestion_Section";
 const Index = () => {
+  const navigation = useNavigation();
+  const router = useRouter();
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
     useSuggestion();
@@ -330,6 +333,7 @@ const Index = () => {
         >
           <TouchableOpacity
             onPress={() => {
+              router.push("second");
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             }}
             style={{
