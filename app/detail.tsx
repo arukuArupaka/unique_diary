@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { SafeAreaView } from "react-native";
 import { Calendar } from "react-native-calendars";
-import CustomCalendar from "../components/Calendar";
 import {
   Keyboard,
   Text,
@@ -16,7 +15,7 @@ import {
 import Feather from "@expo/vector-icons/Feather";
 import Hetter from "./hetter";
 import Hutter from "./hutter";
-const second = () => {
+const detail = () => {
   const router = useRouter();
   const now = new Date();
   const month = now.getMonth() + 1;
@@ -40,16 +39,11 @@ const second = () => {
             paddingTop: "10%",
             backgroundColor: "",
           }} //↓ここに作っていく
-        >
-          {/* カレンダー部分 */}
-          <View>
-            <CustomCalendar />
-          </View>
-        </View>
+        ></View>
         {/* フッター部分 */}
         <Hutter />
       </View>
     </TouchableWithoutFeedback>
   );
 };
-export default second;
+export default detail;

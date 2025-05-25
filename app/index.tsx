@@ -7,6 +7,11 @@ import { useNavigation } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Hetter from "./hetter";
+import Hutter from "./hutter";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
   Keyboard,
@@ -18,30 +23,38 @@ import {
 } from "react-native";
 import { useSuggestion } from "../components/Suggestion_Section";
 const Index = () => {
+  const now = new Date();
   const navigation = useNavigation();
   const router = useRouter();
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
     useSuggestion();
-  const handleSave = () => {
+  const handleSave = async () => {
+    //保存機能
     if (diaryText.trim() === "") {
+      //空白かどうか見る
       Alert.alert("エラー", "日記の内容を入力してください");
       return;
     }
 
-    // 保存した後の処理（ここではアラート）
-    Alert.alert("保存完了", "日記が保存されました");
-    setDiaryText(""); // 入力欄をクリア
-  };
+    try {
+      const today = new Date();
+      const key = `diary-${today.getFullYear()}-${
+        today.getMonth() + 1
+      }-${today.getDate()}`; //今日の日にち管理
+      await AsyncStorage.setItem(key, diaryText); //ストレージに保存
 
-  const now = new Date();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  const todayString = `${month}月${day}日`; // 今日の日付
+      Alert.alert("保存完了", "日記が保存されました");
+      setDiaryText(""); //入力欄を空にする
+    } catch (error) {
+      Alert.alert("保存失敗", "データの保存中にエラーが発生しました");
+      console.error(error);
+    }
+  };
 
   const [suggestionwhole, setsuggestionwhole] = useState(false);
   const handlePress = () => {
-    setsuggestionwhole((prev) => !prev); // 押すたびに状態を反転
+    setsuggestionwhole((prev) => !prev); // 見える見えないを変える
   };
 
   return (
@@ -49,90 +62,11 @@ const Index = () => {
       <View
         style={{
           flex: 1,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#f8f8ff", //白よりちょっと暗い色で
         }}
       >
         {/* ヘッダー部分 */}
-        <View
-          style={{
-            width: "100%",
-            height: "10%",
-            flexDirection: "row",
-            gap: "5%",
-            backgroundColor: "#f0f8ff", //#e0ffff別の候補
-            paddingTop: "12%",
-            borderBottomWidth: 1,
-            borderColor: "#ccc",
-          }}
-        >
-          <Text
-            style={{
-              color: "black",
-              fontSize: 32,
-              marginLeft: 15,
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
-          >
-            {todayString} {/* 今日の日付を表示 */}
-          </Text>
-          <Feather
-            name="bell"
-            size={31}
-            color="black"
-            style={{
-              shadowOpacity: 0.3,
-              shadowRadius: 4,
-              elevation: 3,
-              marginTop: 3,
-              marginLeft: "33%",
-            }}
-          />
-          <View
-            style={{
-              width: 35,
-              height: 35,
-              marginTop: 0,
-              backgroundColor: "white",
-              shadowColor: "black",
-              //shadowOffset: { width: 0, height: 2 }, //影
-              shadowOpacity: 0.5,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
-          >
-            <View
-              style={{
-                width: "100%",
-                height: "25%",
-                backgroundColor: "red",
-                zIndex: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingBottom: 13,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 22,
-                  marginBottom: 0,
-                  backgroundColor: "",
-                  textAlign: "center",
-                }}
-              >
-                {day} {/* 今日の日の「日」の部分を表示 */}
-              </Text>
-            </View>
-          </View>
-        </View>
-
+        <Hetter />
         {/* メイン画面*/}
         <View
           style={{
@@ -159,9 +93,9 @@ const Index = () => {
               height: 150,
               textAlignVertical: "top",
               backgroundColor: "#fff",
-              marginBottom: 20,
+              marginBottom: 0,
               fontSize: 20,
-              shadowOffset: { width: 0, height: 2 },
+              shadowOffset: { width: 0, height: 3 }, //影の位置大きいとしたに行く
               shadowOpacity: 0.3,
               shadowRadius: 4,
               elevation: 3,
@@ -169,7 +103,7 @@ const Index = () => {
             placeholder="今日はどんな一日だった？"
             multiline
             value={diaryText}
-            onChangeText={setDiaryText} // 入力内容が変わるたびに状態を更新
+            onChangeText={setDiaryText}
           />
           <View
             style={{
@@ -186,12 +120,13 @@ const Index = () => {
             style={{
               flexDirection: "row",
               width: "100%",
-              height: "25%",
+              height: "30%",
+              backgroundColor: "",
             }}
           >
             <View
               style={{
-                width: "87%",
+                width: "88%",
                 height: "100%",
                 backgroundColor: "",
               }}
@@ -201,24 +136,26 @@ const Index = () => {
                 <View
                   style={{
                     width: "100%",
-                    height: "100%",
-                    backgroundColor: "#FFFFFF",
+                    height: "90%",
+                    backgroundColor: "#ffffff",
                     borderColor: "#ccc",
                     borderWidth: 0,
                     borderRadius: 8,
+                    marginTop: "6%",
                     gap: 6,
                     shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.3,
                     shadowRadius: 4,
                     elevation: 3,
-                    paddingHorizontal: "3%",
+                    paddingHorizontal: "4%",
+                    paddingVertical: "1%",
                   }}
                 >
                   {/*　
                   
                   
                   お願いしますｍ（_ _）ｍ
-                
+
                   ここ変えて↓ 
                   
                   
@@ -244,15 +181,38 @@ const Index = () => {
             {/*ボタン自体*/}
             <View
               style={{
-                width: "15%",
-                height: "100%",
-                gap: "10%",
+                width: "20%",
+                height: "90%",
+                gap: "4%",
                 borderColor: "#ccc",
                 borderWidth: 0,
-                marginTop: "10%",
+                marginTop: "4%",
+                paddingBottom: "0%",
                 backgroundColor: "",
               }}
             >
+              <TouchableOpacity //保存ボタン
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handleSave();
+                }}
+                style={{
+                  width: "100%",
+                  height: "32%",
+                  backgroundColor: "",
+                  borderRadius: 100,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginTop: "0%",
+                  paddingTop: "12%",
+                  shadowOpacity: 0.2,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  paddingRight: 9,
+                }}
+              >
+                <Feather name="save" size={47} color="#4db5ff" />
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -260,23 +220,23 @@ const Index = () => {
                 }}
                 style={{
                   width: "100%",
-                  height: "40%",
+                  height: "32%",
                   backgroundColor: "",
                   borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
+                  marginTop: "0%",
                   shadowOpacity: 0.2,
                   shadowRadius: 4,
                   elevation: 3,
+                  paddingRight: 5,
                 }}
               >
-                <View>
-                  <MaterialCommunityIcons
-                    name="restart"
-                    size={60}
-                    color="black"
-                  />
-                </View>
+                <MaterialCommunityIcons //リロードマークの
+                  name="reload"
+                  size={54}
+                  color="red"
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -284,8 +244,8 @@ const Index = () => {
                   handlePress();
                 }}
                 style={{
-                  width: "100%",
-                  height: "40%",
+                  width: "80%",
+                  height: "32%",
                   backgroundColor: "",
                   borderRadius: 100,
                   alignItems: "center",
@@ -293,9 +253,10 @@ const Index = () => {
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
                   elevation: 3,
+                  paddingLeft: 7,
                 }}
               >
-                <AntDesign name="questioncircleo" size={50} color="black" />
+                <AntDesign name="questioncircleo" size={48} color="black" />
               </TouchableOpacity>
             </View>
           </View>
@@ -318,115 +279,7 @@ const Index = () => {
         </View>
 
         {/* フッター部分 */}
-        <View
-          style={{
-            width: "100%",
-            height: "10%",
-            backgroundColor: "#f0f8ff",
-            paddingTop: "1.5%",
-            justifyContent: "center",
-            borderTopWidth: 1,
-            borderColor: "#ccc",
-            flexDirection: "row",
-            gap: "20%",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              router.push("second");
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            }}
-            style={{
-              width: "12%", // 適当な横幅に変更
-              height: "60%",
-              borderRadius: 10,
-              // backgroundColor: "#ccc",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <View
-              style={{
-                width: 35,
-                height: 35,
-                marginTop: 0,
-                backgroundColor: "white",
-                shadowOpacity: 0.5,
-                shadowRadius: 4,
-                elevation: 3,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  height: "25%",
-                  backgroundColor: "black", //#4db5ff
-                  zIndex: 10,
-                }}
-              ></View>
-              <View
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingBottom: 13,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 22,
-                    marginBottom: 0,
-                    backgroundColor: "",
-                    textAlign: "center",
-                  }}
-                >
-                  {day} {/* 今日の日の「日」の部分を表示 */}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-            }
-            style={{
-              width: "12%", // 適当な横幅に変更
-              height: "60%",
-              borderRadius: 10,
-              // backgroundColor: "white",
-              alignItems: "center",
-              justifyContent: "center", // 空文字は避ける
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="home-edit-outline"
-              size={46}
-              color="#4db5ff"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-            }
-            style={{
-              width: "12%", // 適当な横幅に変更
-              height: "60%",
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowOpacity: 0.3,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
-          >
-            <Entypo name="list" size={46} color="black" />{" "}
-            {/* その画面にいるときは#4db5ffこの色にしたい*/}
-          </TouchableOpacity>
-        </View>
+        <Hutter />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -434,8 +287,8 @@ const Index = () => {
 
 export default Index;
 
-Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // 軽くトンッ（デフォルト）
-Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // もう少しだけ強く（おすすめ）
-Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // しっかり重めにブルッ
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // 軽め
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // 主にこれ使ってます
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // 重め
 
-//npx expo install expo-haptics(音に関する)
+//npx expo install expo-haptics(音に関するやつ)
