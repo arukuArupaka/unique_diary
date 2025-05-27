@@ -41,7 +41,7 @@ const Index = () => {
       const today = new Date();
       const key = `diary-${today.getFullYear()}-${
         today.getMonth() + 1
-      }-${today.getDate()}`; //今日の日にち管理
+      }-${today.getDate()}`; //keyをdiary-YYYY-M-Dかたちでつくる
       await AsyncStorage.setItem(key, diaryText); //ストレージに保存
 
       Alert.alert("保存完了", "日記が保存されました");

@@ -1,12 +1,14 @@
-// components/CustomCalendar.tsx
-
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { Calendar as RNCalendar } from "react-native-calendars";
 
-export default function Calendar() {
+type Props = {
+  onDateSelected: (date: string) => void; //??
+};
+
+export default function CustomCalendar({ onDateSelected }: Props) {
   return (
-    <View //なんかダサいから変えたい。
+    <View
       style={{
         marginTop: 0,
         backgroundColor: "#fff",
@@ -21,20 +23,13 @@ export default function Calendar() {
     >
       <RNCalendar
         onDayPress={(day) => {
-          console.log(day.dateString); //↓押された日にちの日記を出す。
+          onDateSelected(day.dateString); //ここで親に日付を渡す??
         }}
-        markedDates={{
-          "2025-05-25": {
-            selected: true,
-            marked: true,
-            selectedColor: "#4db5ff",
-          },
-          "2025-05-21": {
-            marked: true,
-            dotColor: "#4db5ff",
-          },
-        }}
-        //なぜstyleが効かないのか
+        markedDates={
+          {
+            //なんかかける
+          }
+        }
         theme={{
           backgroundColor: "#ffffff",
           calendarBackground: "#f8f9fa",
