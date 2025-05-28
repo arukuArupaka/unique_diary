@@ -6,11 +6,13 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useSuggestion } from "../components/Suggestion_Section";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { usePathname } from "expo-router";
 const Input = () => {
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
     useSuggestion();
-
+  const [selectedDate, setSelectedDate] = useState("");
+  const pathname = usePathname();
   const handleSave = async () => {
     //保存機能
     if (diaryText.trim() === "") {
@@ -40,14 +42,9 @@ const Input = () => {
   };
 
   return (
-    <View>
-      <Text
-        style={{
-          fontSize: 20,
-          marginBottom: 10,
-        }}
-      >
-        今日の日記
+    <View style={{ backgroundColor: "", height: "58%" }}>
+      <Text style={{ fontSize: 20, marginBottom: 10 }}>
+        {pathname === "/InputPase" ? `${selectedDate} の日記` : "今日の日記"}
       </Text>
       <TextInput
         style={{
@@ -85,7 +82,7 @@ const Input = () => {
         style={{
           flexDirection: "row",
           width: "100%",
-          height: "30%",
+          height: "50%",
           backgroundColor: "",
         }}
       >
@@ -113,7 +110,7 @@ const Input = () => {
                 shadowRadius: 4,
                 elevation: 3,
                 paddingHorizontal: "4%",
-                paddingVertical: "1%",
+                paddingVertical: "2.5%",
               }}
             >
               {/*　
