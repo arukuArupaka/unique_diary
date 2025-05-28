@@ -1,7 +1,11 @@
 import { Stack } from "expo-router";
+import { SelectedDateProvider } from "../data/DateContext";
 
 export default function RootLayout() {
-  return <Stack 
-    screenOptions={{ headerShown: false}}
-  />;
+  return (
+    <SelectedDateProvider // いろんな場所で共有するため
+    >
+      <Stack screenOptions={{ headerShown: false }} />
+    </SelectedDateProvider>
+  );
 }

@@ -1,9 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 import { Calendar as RNCalendar } from "react-native-calendars";
+import { useSelectedDate } from "../data/DateContext";
 
 type Props = {
-  onDateSelected: (date: string) => void; //??
+  onDateSelected: (date: string) => void; //??ここで渡してる？
 };
 
 export default function CustomCalendar({ onDateSelected }: Props) {

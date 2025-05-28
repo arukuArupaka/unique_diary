@@ -1,5 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
-import { router, usePathname } from "expo-router";
+import { router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 
@@ -8,7 +8,6 @@ const month = now.getMonth() + 1;
 const day = now.getDate();
 const todayString = `${month}月${day}日`; // 今日の日付
 const Hetter = () => {
-  const pathname = usePathname();
   return (
     <View
       style={{
