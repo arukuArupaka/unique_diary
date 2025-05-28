@@ -2,6 +2,7 @@ import Input from "@/components/Input";
 import { TouchableWithoutFeedback, View, Keyboard } from "react-native";
 import Hetter from "./hetter";
 import Hutter from "./hutter";
+import {} from "@/app/second"; // 選択した日付を取得するためのコンテキスト
 
 const inputPase = () => {
   return (

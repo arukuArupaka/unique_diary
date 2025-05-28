@@ -10,7 +10,7 @@ const month = now.getMonth() + 1;
 const day = now.getDate();
 const todayString = `${month}月${day}日`; // 今日の日付
 const Hutter = () => {
-  const pathname = usePathname(); //今戸の画面にいるか見れる。
+  const pathname = usePathname(); //今どこの画面にいるか見れる。
   const activeColor = "#4db5ff"; //水色っぽいつ
   const inactiveColor = "#808080"; //グレー
 

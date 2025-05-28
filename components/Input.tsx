@@ -7,11 +7,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useSuggestion } from "../components/Suggestion_Section";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePathname } from "expo-router";
+import { useSelectedDate } from "@/data/DateContext";
+import inputPase from "@/app/InputPase";
+
 const Input = () => {
   const [diaryText, setDiaryText] = useState(""); // 日記の入力内容を保持する状態
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
     useSuggestion();
-  const [selectedDate, setSelectedDate] = useState("");
+  const { selectedDate } = useSelectedDate();
   const pathname = usePathname();
   const handleSave = async () => {
     //保存機能
@@ -44,7 +47,7 @@ const Input = () => {
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
       <Text style={{ fontSize: 20, marginBottom: 10 }}>
-        {pathname === "/InputPase" ? `${selectedDate} の日記` : "今日の日記"}
+        {pathname === "/InputPase" ? `${selectedDate}の日記` : "今日の日記"}
       </Text>
       <TextInput
         style={{
@@ -62,7 +65,11 @@ const Input = () => {
           shadowRadius: 4,
           elevation: 3,
         }}
-        placeholder="今日はどんな一日だった？"
+        placeholder={
+          pathname === "/InputPase"
+            ? `${selectedDate}の日記を書いてね`
+            : "今日はどんな一日だった？"
+        }
         multiline
         value={diaryText}
         onChangeText={setDiaryText}
@@ -131,12 +138,12 @@ const Input = () => {
               <Text style={{ fontSize: 15, color: "red" }}>大学生活</Text>
               {/*↑これ消してもいい */}
 
-              <Text style={{ fontSize: 18 }}>{LifeSuggestion}</Text>
+              <Text style={{ fontSize: 18 }}>{CollegeSuggestion}</Text>
 
               <Text style={{ fontSize: 15, color: "red" }}>人生</Text>
               {/*↑これ消してもいい */}
 
-              <Text style={{ fontSize: 18 }}> {CollegeSuggestion}</Text>
+              <Text style={{ fontSize: 18 }}> {LifeSuggestion}</Text>
             </View>
           )}
         </View>

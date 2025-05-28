@@ -4,6 +4,8 @@ import * as Haptics from "expo-haptics";
 import { useRouter, useNavigation } from "expo-router";
 import React, { useEffect, useState, useCallback } from "react";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useSelectedDate } from "@/data/DateContext";
+
 import {
   SafeAreaView,
   Keyboard,
@@ -28,9 +30,12 @@ const Second = () => {
     return `diary-${parseInt(year)}-${parseInt(month)}-${parseInt(day)}`; //paeseIntで0を消している
   };
 
-  const [selectedDate, setSelectedDate] = useState("");
+  const { selectedDate, setSelectedDate } = useSelectedDate(); //日付を選択したときにselectedDateにyyyy-mm-ddの形で入る。
   const [diaryText, setDiaryText] = useState("");
   const [todayDiary, setTodayDiary] = useState("読み込み中..."); //とりあえず書いてる
+  const selectday = () => {
+    return selectedDate;
+  };
 
   // 選択した日付の日記を読み込む
   useEffect(() => {
@@ -140,3 +145,4 @@ const Second = () => {
 };
 
 export default Second;
+//export { selectday };
