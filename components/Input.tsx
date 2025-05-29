@@ -24,12 +24,22 @@ const Input = () => {
       return;
     }
 
+    const formatDateKey = (dateString: string) => {
+      //YYYY-0M-0Dの０を消している
+      const [year, month, day] = dateString.split("-");
+      return `diary-${parseInt(year)}-${parseInt(month)}-${parseInt(day)}`; //paeseIntで0を消している
+    };
+
     try {
       const today = new Date();
       const key = `diary-${today.getFullYear()}-${
         today.getMonth() + 1
       }-${today.getDate()}`; //keyをdiary-YYYY-M-Dかたちでつくる
-      await AsyncStorage.setItem(key, diaryText); //ストレージに保存
+      if (pathname === "/InputPase") {
+        await AsyncStorage.setItem(formatDateKey(selectedDate), diaryText); //選択した日付のkey
+      } else {
+        await AsyncStorage.setItem(key, diaryText); //今日の日付のkey
+      }
 
       Alert.alert("保存完了", "日記が保存されました");
       setDiaryText(""); //入力欄を空にする
@@ -67,7 +77,7 @@ const Input = () => {
         }}
         placeholder={
           pathname === "/InputPase"
-            ? `${selectedDate}の日記を書いてね`
+            ? `${selectedDate}の日記を書いてね` //選択した日付が出る
             : "今日はどんな一日だった？"
         }
         multiline

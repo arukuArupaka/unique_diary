@@ -92,6 +92,7 @@ const Second = () => {
           <View>
             <CustomCalendar
               onDateSelected={setSelectedDate} //ここで日にちが押されたときにselectedDateにyyyy-mm-ddの形で入る。
+              selectedDate={selectedDate}
             />
           </View>
           {/* 日記表示 */}

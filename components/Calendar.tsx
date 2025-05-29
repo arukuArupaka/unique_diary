@@ -5,9 +5,13 @@ import { useSelectedDate } from "../data/DateContext";
 
 type Props = {
   onDateSelected: (date: string) => void; //??ここで渡してる？
+  selectedDate: string; //??
 };
 
-export default function CustomCalendar({ onDateSelected }: Props) {
+export default function CustomCalendar({
+  onDateSelected,
+  selectedDate,
+}: Props) {
   return (
     <View
       style={{
@@ -27,8 +31,13 @@ export default function CustomCalendar({ onDateSelected }: Props) {
           onDateSelected(day.dateString); //ここで親に日付を渡す??
         }}
         markedDates={
+          //なんかかける
           {
-            //なんかかける
+            [selectedDate]: {
+              selected: true,
+              selectedColor: "#4db5ff",
+              selectedTextColor: "#fff",
+            },
           }
         }
         theme={{
