@@ -104,16 +104,25 @@ const Second = () => {
             }}
           >
             {selectedDate ? (
-              <Text style={{ fontSize: 16 }}>{selectedDate} の日記:</Text>
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                {selectedDate} の日記:
+              </Text>
             ) : (
-              <Text style={{ fontSize: 16 }}>日付を選んでください</Text>
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                日付を選んでください
+              </Text>
             )}
             <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
             <View style={{ marginTop: 20 }}>
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold", //太くなる。
+                }}
+              >
                 今日の日記：
               </Text>
-              <Text style={{ fontSize: 16, marginTop: 10 }}>{todayDiary}</Text>
+              <Text style={{ fontSize: 18, marginTop: 10 }}>{todayDiary}</Text>
             </View>
           </View>
           {/* 日記入力画面への移動 */}
@@ -123,9 +132,11 @@ const Second = () => {
               useRouter().push("/InputPase");
             }}
             style={{
-              width: 45,
-              height: 45,
-              borderRadius: 25,
+              marginTop: "23%",
+              marginLeft: "81%",
+              width: 60,
+              height: 60,
+              borderRadius: 40,
               borderColor: "black",
               borderWidth: 1,
               alignItems: "center",
@@ -134,9 +145,10 @@ const Second = () => {
               shadowOpacity: 0.5,
               shadowRadius: 4,
               elevation: 3,
+              justifyContent: "center",
             }}
           >
-            <FontAwesome5 name="pencil-alt" size={35} color="black" />
+            <FontAwesome5 name="pencil-alt" size={40} color="black" />
           </TouchableOpacity>
         </View>
         <Hutter />

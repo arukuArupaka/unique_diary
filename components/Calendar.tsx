@@ -34,7 +34,7 @@ export default function CustomCalendar({
           //なんかかける
           {
             [selectedDate]: {
-              selected: true,
+              selected: true, //選択されたときにあらわれる
               selectedColor: "#4db5ff",
               selectedTextColor: "#fff",
             },
