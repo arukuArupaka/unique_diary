@@ -118,38 +118,7 @@ const Index = () => {
                 backgroundColor: "red",
                 flexDirection: "row",
               }}
-            >
-              <View>
-                {/* ここでdaysとtodayIndexを定義 */}
-                {(() => {
-                  const days = ["月", "火", "水", "木", "金", "土", "日"];
-                  const today = new Date();
-                  const todayIndex =
-                    today.getDay() === 0 ? 6 : today.getDay() - 1; // 月曜始まり
-                  return (
-                    <View style={styles.daysContainer}>
-                      {days.map((day, index) => (
-                        <View key={index} style={styles.dayItem}>
-                          <Text style={styles.dayText}>{day}</Text>
-                          <View
-                            style={[
-                              styles.circle,
-                              index === todayIndex
-                                ? styles.checkedCircle
-                                : styles.emptyCircle,
-                            ]}
-                          >
-                            {index === todayIndex && (
-                              <Entypo name="check" size={20} color="white" />
-                            )}
-                          </View>
-                        </View>
-                      ))}
-                    </View>
-                  );
-                })()}
-              </View>
-            </View>
+            ></View>
           </View>
         </View>
 
@@ -161,45 +130,6 @@ const Index = () => {
 };
 
 export default Index;
-
-////////////////////////////////////////////////
-import { StyleSheet } from "react-native";
-
-const styles = StyleSheet.create({
-  daysContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 20,
-    marginHorizontal: 10,
-  },
-  dayItem: {
-    alignItems: "center",
-    marginHorizontal: 5,
-  },
-  dayText: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: "#fff",
-  },
-  circle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "#fff",
-  },
-  checkedCircle: {
-    backgroundColor: "orange",
-    borderColor: "orange",
-  },
-  emptyCircle: {
-    backgroundColor: "transparent",
-    borderColor: "#fff",
-  },
-}); ///////////////////////////////////////
 
 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // 軽め
 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // 主にこれ使ってます

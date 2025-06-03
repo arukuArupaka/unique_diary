@@ -12,14 +12,16 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Hetter from "./hetter";
 import Hutter from "./hutter";
 import { useRouter } from "expo-router";
-import { scheduleDailyNotification } from "../utils/notificationUtils";
+import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
 import i18n from "../utils/i18n";
 
 const Detail = () => {
   const router = useRouter();
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState((i18n as any).locale);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    (i18n as any).locale
+  );
 
   const changeLanguage = (lang: "ja" | "en") => {
     (i18n as any).locale = lang;
@@ -29,15 +31,35 @@ const Detail = () => {
 
   const settingItems = [
     {
-      label: (i18n as any).t("theme"),
+      label: (i18n as any).t("theme"), //英語が基本で日本語にされている。テーマ
       iconLib: MaterialCommunityIcons,
       iconName: "theme-light-dark",
     },
-    { label: (i18n as any).t("passcode"), iconLib: Feather, iconName: "lock" },
-    { label: (i18n as any).t("reminder"), iconLib: Feather, iconName: "bell" },
-    { label: (i18n as any).t("language"), iconLib: Feather, iconName: "settings" },
-    { label: (i18n as any).t("otherC"), iconLib: Feather, iconName: "settings" },
-    { label: (i18n as any).t("otherD"), iconLib: Feather, iconName: "settings" },
+    {
+      label: (i18n as any).t("passcode"), //パスワード
+      iconLib: Feather,
+      iconName: "lock",
+    },
+    {
+      label: (i18n as any).t("reminder"), //リマインダー
+      iconLib: Feather,
+      iconName: "bell",
+    },
+    {
+      label: (i18n as any).t("language"),
+      iconLib: Feather,
+      iconName: "settings",
+    },
+    {
+      label: (i18n as any).t("otherC"),
+      iconLib: Feather,
+      iconName: "settings",
+    },
+    {
+      label: (i18n as any).t("otherD"),
+      iconLib: Feather,
+      iconName: "settings",
+    },
   ];
 
   return (
@@ -76,7 +98,9 @@ const Detail = () => {
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Icon name={item.iconName as any} size={24} color="#555" />
-                    <Text style={{ fontSize: 16, marginLeft: 16 }}>{item.label}</Text>
+                    <Text style={{ fontSize: 16, marginLeft: 16 }}>
+                      {item.label}
+                    </Text>
                   </View>
                   <Feather name="chevron-right" size={24} color="#999" />
                 </TouchableOpacity>
@@ -123,7 +147,13 @@ const Detail = () => {
                   onPress={() => setLanguageModalVisible(false)}
                   style={{ marginTop: 20 }}
                 >
-                  <Text style={{ color: "gray" }}>{(i18n as any).t("cancel")}</Text>
+                  <Text
+                    style={{
+                      color: "red", //キャンセルボタン
+                    }}
+                  >
+                    {(i18n as any).t("cancel")}
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}

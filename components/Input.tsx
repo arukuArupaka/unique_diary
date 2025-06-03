@@ -23,6 +23,23 @@ const Input = () => {
       Alert.alert("エラー", "日記の内容を入力してください");
       return;
     }
+    const saveDiaryTime = async () => {
+      //入力したときの時間を記録する。仕組み！
+      const now = new Date();
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+
+      //historyは履歴の意味で
+      const historyRaw = await AsyncStorage.getItem("diary-time-history"); //key設定？
+      const history = historyRaw ? JSON.parse(historyRaw) : []; //配列にする。
+
+      // 最大30件に制限（古いものから削除）
+      const updatedHistory = [...history, { hour, minute }].slice(-30);
+      await AsyncStorage.setItem(
+        "diary-time-history",
+        JSON.stringify(updatedHistory)
+      );
+    };
 
     const formatDateKey = (dateString: string) => {
       //YYYY-0M-0Dの０を消している
@@ -31,6 +48,8 @@ const Input = () => {
     };
 
     try {
+      await saveDiaryTime();
+
       const today = new Date();
       const key = `diary-${today.getFullYear()}-${
         today.getMonth() + 1
