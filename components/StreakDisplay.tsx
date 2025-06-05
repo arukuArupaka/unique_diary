@@ -9,9 +9,13 @@ const todayIndex = new Date().getDay();
 export default function StreakDisplay() {
   return (
     <View style={styles.container}>
-      <Text style={styles.streakNumber}>{currentStreak}</Text>
-      <Text style={styles.streakLabel}>日連続記録</Text>
+      {/* 横並びで～日連続記録 */}
+      <View style={styles.streakRow}>
+        <Text style={styles.streakNumber}>{currentStreak}</Text>
+        <Text style={styles.streakLabel}>日連続記録</Text>
+      </View>
 
+      {/* 曜日ごとのチェックマーク */}
       <View style={styles.daysContainer}>
         {days.map((day, index) => {
           const isToday = index === todayIndex;
@@ -26,7 +30,7 @@ export default function StreakDisplay() {
                   isToday ? styles.checkedCircle : styles.emptyCircle,
                 ]}
               >
-                {isToday && <Entypo name="check" size={18} color="#fff" />}
+                {isToday && <Entypo name="check" size={16} color="#fff" />}
               </View>
             </View>
           );
@@ -39,19 +43,25 @@ export default function StreakDisplay() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop: 45,
-    paddingHorizontal: 20,
+    marginTop: -8, // 全体を少し上に移動
+    paddingHorizontal: 10,
+  },
+  streakRow: {
+    flexDirection: "row",
+    alignItems: "baseline",  // ← ベースライン揃えで完全に同じ行に
+    justifyContent: "center",
+    marginBottom: 16,
   },
   streakNumber: {
-    fontSize: 68,
+    fontSize: 40, // 少し大きめ
     fontWeight: "bold",
-    color: "#FF6B35", // オレンジ系の色（少し赤みのあるオレンジ）
+    color: "#FF6B35",
+    marginRight: 6,
   },
   streakLabel: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "600",
-    color: "#000000", // 黒色
-    marginBottom: 28,
+    color: "#000000",
   },
   daysContainer: {
     flexDirection: "row",
@@ -62,30 +72,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dayText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#444",
-    marginBottom: 6,
+    marginBottom: 4,
   },
   todayText: {
     fontWeight: "700",
     color: "#3B3B3B",
   },
   circle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
   emptyCircle: {
-    backgroundColor: "#CCC",
+    backgroundColor: "#FFDAB9", // 明るいオレンジ系
   },
   checkedCircle: {
-    backgroundColor: "#3B3B3B",
+    backgroundColor: "#FF7F50", // 明るくて見やすいオレンジ
   },
 });
