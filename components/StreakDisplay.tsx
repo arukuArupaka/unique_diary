@@ -1,21 +1,55 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
-const currentStreak = 10;
 const todayIndex = new Date().getDay();
 
 export default function StreakDisplay() {
+  const fixedStreak = 5; // ※現在は固定値（将来的には動的に）
+
+  // アニメーション用のスケール値（最初は1倍）
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  // 前回の値を保存して比較するためのref
+  const prevStreakRef = useRef<number | null>(null);
+
+  // 数字を拡大→元に戻す1回限りのアニメーション
+  const startAnimation = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.6,      
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,         
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  useEffect(() => {
+    // 初回または値が変わったときのみアニメーション実行
+    if (prevStreakRef.current === null || prevStreakRef.current !== fixedStreak) {
+      startAnimation();
+    }
+    prevStreakRef.current = fixedStreak;
+  }, [fixedStreak]);
+
   return (
     <View style={styles.container}>
-      {/* 横並びで～日連続記録 */}
       <View style={styles.streakRow}>
-        <Text style={styles.streakNumber}>{currentStreak}</Text>
+        {/* ★ 数字の部分だけをアニメーション対象にする */}
+        <Animated.Text
+          style={[styles.streakNumber, { transform: [{ scale: scaleAnim }] }]}
+        >
+          {fixedStreak}
+        </Animated.Text>
         <Text style={styles.streakLabel}>日連続記録</Text>
       </View>
 
-      {/* 曜日ごとのチェックマーク */}
       <View style={styles.daysContainer}>
         {days.map((day, index) => {
           const isToday = index === todayIndex;
@@ -43,17 +77,17 @@ export default function StreakDisplay() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop: -8, // 全体を少し上に移動
+    marginTop: -8,
     paddingHorizontal: 10,
   },
   streakRow: {
     flexDirection: "row",
-    alignItems: "baseline",  // ← ベースライン揃えで完全に同じ行に
+    alignItems: "baseline",
     justifyContent: "center",
     marginBottom: 16,
   },
   streakNumber: {
-    fontSize: 40, // 少し大きめ
+    fontSize: 40,
     fontWeight: "bold",
     color: "#FF6B35",
     marginRight: 6,
@@ -93,9 +127,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   emptyCircle: {
-    backgroundColor: "#FFDAB9", // 明るいオレンジ系
+    backgroundColor: "#FFDAB9",
   },
   checkedCircle: {
-    backgroundColor: "#FF7F50", // 明るくて見やすいオレンジ
+    backgroundColor: "#FF7F50",
   },
 });
