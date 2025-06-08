@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+// StreakDisplay.tsx
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
@@ -6,17 +13,23 @@ import { Entypo } from "@expo/vector-icons";
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
 
-export default function StreakDisplay() {
+const StreakDisplay = forwardRef((props, ref) => {
   const [streak, setStreak] = useState(0);
   const [checkedWeekdays, setCheckedWeekdays] = useState<number[]>([]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const prevStreakRef = useRef<number | null>(null);
+  const checkAnimations = useRef<Animated.Value[]>([]);
 
-  // アニメーション
-  const startAnimation = () => {
+  if (checkAnimations.current.length === 0) {
+    for (let i = 0; i < 7; i++) {
+      checkAnimations.current[i] = new Animated.Value(1);
+    }
+  }
+
+  const startStreakAnimation = () => {
     Animated.sequence([
       Animated.timing(scaleAnim, {
-        toValue: 1.6,
+        toValue: 2.0,
         duration: 300,
         useNativeDriver: true,
       }),
@@ -28,9 +41,19 @@ export default function StreakDisplay() {
     ]).start();
   };
 
+  const triggerCheckAnim = (index: number) => {
+    checkAnimations.current[index].setValue(0);
+    Animated.spring(checkAnimations.current[index], {
+      toValue: 1,
+      useNativeDriver: true,
+      friction: 5,
+      tension: 100,
+    }).start();
+  };
+
   const getTodayString = () => {
     const today = new Date();
-    return today.toISOString().split("T")[0]; // "2025-06-06"
+    return today.toISOString().split("T")[0];
   };
 
   const checkAndUpdateStreak = async () => {
@@ -42,34 +65,39 @@ export default function StreakDisplay() {
       const lastDate = storedDate || "";
       const count = storedStreak ? parseInt(storedStreak) : 0;
 
-      // 過去の記録日を取得
       const storedLogDates = await AsyncStorage.getItem("logDates");
       const logDates: string[] = storedLogDates ? JSON.parse(storedLogDates) : [];
 
-      // 今日の記録がまだなければ追加
+      let isFirstTodayLog = false;
+
       if (!logDates.includes(today)) {
         logDates.push(today);
         await AsyncStorage.setItem("logDates", JSON.stringify(logDates));
+        isFirstTodayLog = true;
       }
 
-      // 連続日数の更新
       if (lastDate === today) {
         setStreak(count);
-        return;
+      } else {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayString = yesterday.toISOString().split("T")[0];
+
+        let newStreak = 1;
+        if (lastDate === yesterdayString) {
+          newStreak = count + 1;
+        }
+
+        await AsyncStorage.setItem("lastLoggedDate", today);
+        await AsyncStorage.setItem("streakCount", newStreak.toString());
+        setStreak(newStreak);
       }
 
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayString = yesterday.toISOString().split("T")[0];
-
-      let newStreak = 1;
-      if (lastDate === yesterdayString) {
-        newStreak = count + 1;
+      if (isFirstTodayLog) {
+        triggerCheckAnim(todayIndex);
       }
 
-      await AsyncStorage.setItem("lastLoggedDate", today);
-      await AsyncStorage.setItem("streakCount", newStreak.toString());
-      setStreak(newStreak);
+      await loadThisWeekCheckmarks();
     } catch (err) {
       console.error("連続記録の更新エラー:", err);
     }
@@ -84,7 +112,7 @@ export default function StreakDisplay() {
 
       const now = new Date();
       const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay()); // 今週の日曜日
+      startOfWeek.setDate(now.getDate() - now.getDay());
       startOfWeek.setHours(0, 0, 0, 0);
 
       const endOfWeek = new Date(startOfWeek);
@@ -95,13 +123,12 @@ export default function StreakDisplay() {
         .map((dateStr) => {
           const d = new Date(dateStr);
           if (d >= startOfWeek && d <= endOfWeek) {
-            return d.getDay(); // 曜日インデックス
+            return d.getDay();
           }
           return null;
         })
         .filter((d): d is number => d !== null);
 
-      // 重複を除いた曜日インデックスを保存
       setCheckedWeekdays([...new Set(weekdayIndexes)]);
     } catch (err) {
       console.error("チェックマーク読み込みエラー:", err);
@@ -109,22 +136,24 @@ export default function StreakDisplay() {
   };
 
   useEffect(() => {
-    (async () => {
-      await checkAndUpdateStreak();
-      await loadThisWeekCheckmarks();
-    })();
+    checkAndUpdateStreak();
   }, []);
 
   useEffect(() => {
     if (prevStreakRef.current === null || prevStreakRef.current !== streak) {
-      startAnimation();
+      startStreakAnimation();
     }
     prevStreakRef.current = streak;
   }, [streak]);
 
+  useImperativeHandle(ref, () => ({
+    refresh: async () => {
+      await checkAndUpdateStreak();
+    },
+  }));
+
   return (
     <View style={styles.container}>
-      {/* ▼▼▼ 日連続記録の表示部分 ▼▼▼ */}
       <View style={styles.streakRow}>
         <Animated.Text
           style={[styles.streakNumber, { transform: [{ scale: scaleAnim }] }]}
@@ -134,7 +163,6 @@ export default function StreakDisplay() {
         <Text style={styles.streakLabel}>日連続記録</Text>
       </View>
 
-      {/* ▼▼▼ 曜日ごとのチェック機能部分 ▼▼▼ */}
       <View style={styles.daysContainer}>
         {days.map((day, index) => {
           const isChecked = checkedWeekdays.includes(index);
@@ -150,7 +178,15 @@ export default function StreakDisplay() {
                   isChecked ? styles.checkedCircle : styles.emptyCircle,
                 ]}
               >
-                {isChecked && <Entypo name="check" size={16} color="#fff" />}
+                {isChecked && (
+                  <Animated.View
+                    style={{
+                      transform: [{ scale: checkAnimations.current[index] }],
+                    }}
+                  >
+                    <Entypo name="check" size={16} color="#fff" />
+                  </Animated.View>
+                )}
               </View>
             </View>
           );
@@ -158,7 +194,9 @@ export default function StreakDisplay() {
       </View>
     </View>
   );
-}
+});
+
+export default StreakDisplay;
 
 const styles = StyleSheet.create({
   container: {
