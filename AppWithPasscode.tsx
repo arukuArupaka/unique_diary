@@ -1,11 +1,10 @@
-// AppWithPasscode.tsx
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import InitialScreen from "./password/InitialScreen";
 import AuthPasscodeScreen from "./password/AuthPasscodeScreen";
 import SetPasscodeScreen from "./password/SetPasscodeScreen";
-import HomeScreen from "./index"; // ホーム画面は index.tsx を読み込む
+import HomeScreen from "./index";
 
 const Stack = createNativeStackNavigator();
 
