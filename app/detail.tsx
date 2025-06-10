@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Keyboard,
   Text,
@@ -8,7 +8,6 @@ import {
   Alert,
   Pressable,
   Platform,
-  Switch,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -18,14 +17,32 @@ import { useRouter } from "expo-router";
 import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
 import i18n from "../utils/i18n";
+import * as SecureStore from "expo-secure-store";
 
 const Detail = () => {
   const router = useRouter();
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState((i18n as any).locale);
-  const [theme, setTheme] = useState<"light" | "dark">("light"); // テーマ状態追加
-  const [themeModalVisible, setThemeModalVisible] = useState(false); // テーマ選択モーダル
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    (i18n as any).locale
+  );
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [themeModalVisible, setThemeModalVisible] = useState(false);
+  const [passcodeEnabled, setPasscodeEnabled] = useState(false); //passcodeの有効無効を判定
 
+  useEffect(() => {
+    const loadPasscodeStatus = async () => {
+      const enabled = await SecureStore.getItemAsync("passcode_enabled");
+      setPasscodeEnabled(enabled === "true");
+    };
+    loadPasscodeStatus();
+  }, []);
+
+  const disablePasscode = async () => {
+    await SecureStore.deleteItemAsync("passcode");
+    await SecureStore.setItemAsync("passcode_enabled", "false");
+    setPasscodeEnabled(false);
+    Alert.alert("完了", "パスコード機能を無効にしました");
+  };
   const changeLanguage = (lang: "ja" | "en") => {
     (i18n as any).locale = lang;
     setSelectedLanguage(lang);
@@ -107,14 +124,46 @@ const Detail = () => {
                     );
                   } else if (item.label === (i18n as any).t("theme")) {
                     setThemeModalVisible(true);
+                  } else if (item.label === (i18n as any).t("passcode")) {
+                    if (!passcodeEnabled) {
+                      router.push("/set-passcode");
+                    } else {
+                      Alert.alert(
+                        "警告",
+                        "現在記憶しているパスコードを一度削除してよろしいですか？",
+                        [
+                          {
+                            text: "キャンセル",
+                            style: "cancel", //iosだとボタンが左側になるらしい
+                          },
+                          {
+                            text: "無効にする",
+                            style: "destructive",
+                            onPress: () => disablePasscode(),
+                          },
+                        ],
+                        { cancelable: true }
+                      );
+                    }
                   } else {
                     console.log(`${item.label} が押されました`);
                   }
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Icon name={item.iconName as any} size={24} color={iconColor} />
-                  <Text style={{ fontSize: 16, marginLeft: 16, color: textColor, fontWeight: "500" }}>
+                  <Icon
+                    name={item.iconName as any}
+                    size={24}
+                    color={iconColor}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      marginLeft: 16,
+                      color: textColor,
+                      fontWeight: "500",
+                    }}
+                  >
                     {item.label}
                   </Text>
                 </View>
@@ -122,111 +171,6 @@ const Detail = () => {
               </TouchableOpacity>
             );
           })}
-
-          {/* 言語モーダル */}
-          {languageModalVisible && (
-            <View
-              style={{
-                position: "absolute",
-                top: "30%",
-                left: "10%",
-                right: "10%",
-                padding: 25,
-                backgroundColor: "rgba(255,255,255,0.97)",
-                borderRadius: 16,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 3 },
-                shadowOpacity: 0.25,
-                shadowRadius: 6,
-                elevation: 6,
-                zIndex: 100,
-              }}
-            >
-              <Text style={{ fontSize: 20, marginBottom: 25, fontWeight: "600", color: "#222" }}>
-                {(i18n as any).t("selectLanguage")}
-              </Text>
-
-              {["ja", "en"].map((lang) => (
-                <Pressable
-                  key={lang}
-                  onPress={() => changeLanguage(lang as "ja" | "en")}
-                  style={({ pressed }) => [
-                    {
-                      paddingVertical: 14,
-                      borderRadius: 10,
-                      backgroundColor: pressed ? "#f0f0f0" : "transparent",
-                      marginBottom: 12,
-                    },
-                  ]}
-                >
-                  <Text style={{ fontSize: 16 }}>
-                    {lang === "ja"
-                      ? "🇯🇵 " + (i18n as any).t("japanese")
-                      : "🇺🇸 " + (i18n as any).t("english")}
-                  </Text>
-                </Pressable>
-              ))}
-
-              <TouchableOpacity onPress={() => setLanguageModalVisible(false)} style={{ marginTop: 30, alignSelf: "center" }}>
-                <Text style={{ color: "#d9534f", fontWeight: "600", fontSize: 16 }}>
-                  {(i18n as any).t("cancel")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* テーマモーダル */}
-          {themeModalVisible && (
-            <View
-              style={{
-                position: "absolute",
-                top: "30%",
-                left: "10%",
-                right: "10%",
-                padding: 25,
-                backgroundColor: "rgba(255,255,255,0.97)",
-                borderRadius: 16,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 3 },
-                shadowOpacity: 0.25,
-                shadowRadius: 6,
-                elevation: 6,
-                zIndex: 100,
-              }}
-            >
-              <Text style={{ fontSize: 20, marginBottom: 25, fontWeight: "600", color: "#222" }}>
-                {(i18n as any).t("selectTheme") || "テーマを選択"}
-              </Text>
-
-              {["light", "dark"].map((option) => (
-                <Pressable
-                  key={option}
-                  onPress={() => {
-                    setTheme(option as "light" | "dark");
-                    setThemeModalVisible(false);
-                  }}
-                  style={({ pressed }) => [
-                    {
-                      paddingVertical: 14,
-                      borderRadius: 10,
-                      backgroundColor: pressed ? "#f0f0f0" : "transparent",
-                      marginBottom: 12,
-                    },
-                  ]}
-                >
-                  <Text style={{ fontSize: 16 }}>
-                    {option === "light" ? "☀️ ライト" : "🌙 ダーク"}
-                  </Text>
-                </Pressable>
-              ))}
-
-              <TouchableOpacity onPress={() => setThemeModalVisible(false)} style={{ marginTop: 30, alignSelf: "center" }}>
-                <Text style={{ color: "#d9534f", fontWeight: "600", fontSize: 16 }}>
-                  {(i18n as any).t("cancel")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
 
         <Hutter />
