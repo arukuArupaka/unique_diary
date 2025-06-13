@@ -1,4 +1,3 @@
-// StreakDisplay.tsx
 import React, {
   useEffect,
   useRef,
@@ -17,7 +16,6 @@ const StreakDisplay = forwardRef((props, ref) => {
   const [streak, setStreak] = useState(0);
   const [checkedWeekdays, setCheckedWeekdays] = useState<number[]>([]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const prevStreakRef = useRef<number | null>(null);
   const checkAnimations = useRef<Animated.Value[]>([]);
 
   if (checkAnimations.current.length === 0) {
@@ -52,69 +50,35 @@ const StreakDisplay = forwardRef((props, ref) => {
   };
 
   const getTodayString = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+    const now = new Date();
+    now.setHours(now.getHours() + 9); // JST補正
+    return now.toISOString().split("T")[0];
   };
 
-  const checkAndUpdateStreak = async () => {
+  const loadStreakAndWeekdays = async () => {
     try {
       const today = getTodayString();
-      const storedDate = await AsyncStorage.getItem("lastLoggedDate");
       const storedStreak = await AsyncStorage.getItem("streakCount");
+      const streakNum = storedStreak ? parseInt(storedStreak) : 0;
+      setStreak(streakNum);
 
-      const lastDate = storedDate || "";
-      const count = storedStreak ? parseInt(storedStreak) : 0;
-
-      const storedLogDates = await AsyncStorage.getItem("logDates");
-      const logDates: string[] = storedLogDates ? JSON.parse(storedLogDates) : [];
-
-      let isFirstTodayLog = false;
-
-      if (!logDates.includes(today)) {
-        logDates.push(today);
-        await AsyncStorage.setItem("logDates", JSON.stringify(logDates));
-        isFirstTodayLog = true;
-      }
-
-      if (lastDate === today) {
-        setStreak(count);
+      const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
+      if (animatedDate === today) {
+        // 今日のアニメーションはすでに実行済み → スキップ
       } else {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayString = yesterday.toISOString().split("T")[0];
-
-        let newStreak = 1;
-        if (lastDate === yesterdayString) {
-          newStreak = count + 1;
-        }
-
-        await AsyncStorage.setItem("lastLoggedDate", today);
-        await AsyncStorage.setItem("streakCount", newStreak.toString());
-        setStreak(newStreak);
+        startStreakAnimation();
+        await AsyncStorage.setItem("streakAnimationDate", today);
       }
 
-      if (isFirstTodayLog) {
-        triggerCheckAnim(todayIndex);
-      }
-
-      await loadThisWeekCheckmarks();
-    } catch (err) {
-      console.error("連続記録の更新エラー:", err);
-    }
-  };
-
-  const loadThisWeekCheckmarks = async () => {
-    try {
       const storedLogDates = await AsyncStorage.getItem("logDates");
       if (!storedLogDates) return;
 
       const dateArray: string[] = JSON.parse(storedLogDates);
-
       const now = new Date();
+      now.setHours(now.getHours() + 9);
       const startOfWeek = new Date(now);
       startOfWeek.setDate(now.getDate() - now.getDay());
       startOfWeek.setHours(0, 0, 0, 0);
-
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(startOfWeek.getDate() + 6);
       endOfWeek.setHours(23, 59, 59, 999);
@@ -122,6 +86,7 @@ const StreakDisplay = forwardRef((props, ref) => {
       const weekdayIndexes = dateArray
         .map((dateStr) => {
           const d = new Date(dateStr);
+          d.setHours(d.getHours() + 9);
           if (d >= startOfWeek && d <= endOfWeek) {
             return d.getDay();
           }
@@ -130,25 +95,22 @@ const StreakDisplay = forwardRef((props, ref) => {
         .filter((d): d is number => d !== null);
 
       setCheckedWeekdays([...new Set(weekdayIndexes)]);
+
+      if (weekdayIndexes.includes(todayIndex)) {
+        triggerCheckAnim(todayIndex);
+      }
     } catch (err) {
-      console.error("チェックマーク読み込みエラー:", err);
+      console.error("ストリーク読み込みエラー:", err);
     }
   };
 
   useEffect(() => {
-    checkAndUpdateStreak();
+    loadStreakAndWeekdays();
   }, []);
-
-  useEffect(() => {
-    if (prevStreakRef.current === null || prevStreakRef.current !== streak) {
-      startStreakAnimation();
-    }
-    prevStreakRef.current = streak;
-  }, [streak]);
 
   useImperativeHandle(ref, () => ({
     refresh: async () => {
-      await checkAndUpdateStreak();
+      await loadStreakAndWeekdays();
     },
   }));
 
