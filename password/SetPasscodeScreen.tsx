@@ -1,75 +1,120 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  TextInput,
+} from "react-native";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useNavigation } from "@react-navigation/native";
 
-const SetPasscodeScreen = () => {
-  const [pin, setPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
-  const [step, setStep] = useState(1); // 1: 初回入力, 2: 再確認
-  const navigation = useNavigation();
+const SetPasscodeScreen: React.FC = () => {
+  const router = useRouter();
 
+  // step: 1 = 初回入力, 2 = 再確認
+  const [step, setStep] = useState<1 | 2>(1);
+  const [pin, setPin] = useState<string>("");
+  const [confirmPin, setConfirmPin] = useState<string>("");
+
+  /** 1 回目 4 桁入力を検証 */
   const handleNext = () => {
     if (pin.length !== 4) {
-      Alert.alert("4桁のパスコードを入力してください");
+      Alert.alert("エラー", "パスコードは4桁で入力してください");
       return;
     }
     setStep(2);
   };
 
+  /** 再確認して保存 */
   const handleConfirm = async () => {
     if (pin === confirmPin) {
       await SecureStore.setItemAsync("passcode", pin);
       await SecureStore.setItemAsync("passcode_enabled", "true");
-      Alert.alert("パスコードが設定されました");
-      navigation.goBack(); // detail.tsx に戻る
+      Alert.alert("設定完了", "パスコードが設定されました");
+      router.back(); // 前の画面へ戻る（index.tsx など）
     } else {
-      Alert.alert("パスコードが一致しません");
+      Alert.alert(
+        "パスコードの不一致",
+        "もう一度パスコードを設定しなおしてください"
+      );
       setConfirmPin("");
-      setStep(1); // 最初からやり直し
+      setStep(1);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        {step === 1
-          ? "4桁のパスコードを入力してください"
-          : "もう一度パスコードを入力してください"}
-      </Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="number-pad"
-        secureTextEntry
-        maxLength={4}
-        value={step === 1 ? pin : confirmPin}
-        onChangeText={step === 1 ? setPin : setConfirmPin}
-      />
-      <Button
-        title={step === 1 ? "次へ" : "決定"}
-        onPress={step === 1 ? handleNext : handleConfirm}
-      />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#f8f8ff",
+          padding: 20,
+          justifyContent: "center",
+          marginBottom: 50,
+        }}
+      >
+        {/* タイトル */}
+        <Text
+          style={{
+            fontSize: 30,
+            textAlign: "center",
+            fontWeight: 600,
+            marginBottom: 20,
+          }}
+        >
+          {step === 1
+            ? "4桁のパスコードを\n入力してください"
+            : "もう一度パスコードを\n入力してください"}
+        </Text>
+
+        <Text
+          style={{
+            fontSize: 14,
+            textAlign: "center",
+            color: "gray",
+            marginBottom: 20,
+          }}
+        >
+          パスコードを忘れると復元ができません。{"\n"}大切に保管してください。
+        </Text>
+
+        {/* 入力フィールド */}
+        <TextInput
+          style={{
+            borderBottomWidth: 1,
+            fontSize: 24,
+            textAlign: "center",
+            marginBottom: 20,
+            paddingVertical: 6,
+          }}
+          keyboardType="number-pad"
+          secureTextEntry
+          maxLength={4}
+          value={step === 1 ? pin : confirmPin}
+          onChangeText={step === 1 ? setPin : setConfirmPin} //1回目と再確認を区別
+        />
+
+        {/* 次へ / 決定 ボタン */}
+        <TouchableOpacity
+          style={{
+            alignSelf: "center",
+            backgroundColor: "#1e90ff",
+            paddingHorizontal: 40,
+            paddingVertical: 10,
+            borderRadius: 8,
+          }}
+          onPress={step === 1 ? handleNext : handleConfirm}
+        >
+          <Text style={{ color: "#fff", fontSize: 25 }}>
+            {step === 1 ? "次へ" : "決定"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default SetPasscodeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    borderBottomWidth: 1,
-    fontSize: 24,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-});
