@@ -8,12 +8,13 @@ import React, {
 import { View, Text, StyleSheet, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
+import { getTodayString, isValidDateString } from "../utils/date"; // ← ここを相対パスに変更
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
 
 const StreakDisplay = forwardRef((props, ref) => {
-  const [streak, setStreak] = useState(0);
+  const [streak, setStreak] = useState<number>(0);
   const [checkedWeekdays, setCheckedWeekdays] = useState<number[]>([]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const checkAnimations = useRef<Animated.Value[]>([]);
@@ -49,23 +50,15 @@ const StreakDisplay = forwardRef((props, ref) => {
     }).start();
   };
 
-  const getTodayString = () => {
-    const now = new Date();
-    now.setHours(now.getHours() + 9); // JST補正
-    return now.toISOString().split("T")[0];
-  };
-
   const loadStreakAndWeekdays = async () => {
     try {
       const today = getTodayString();
       const storedStreak = await AsyncStorage.getItem("streakCount");
-      const streakNum = storedStreak ? parseInt(storedStreak) : 0;
+      const streakNum = storedStreak ? parseInt(storedStreak, 10) : 0;
       setStreak(streakNum);
 
       const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
-      if (animatedDate === today) {
-        // 今日のアニメーションはすでに実行済み → スキップ
-      } else {
+      if (animatedDate !== today) {
         startStreakAnimation();
         await AsyncStorage.setItem("streakAnimationDate", today);
       }
@@ -74,6 +67,10 @@ const StreakDisplay = forwardRef((props, ref) => {
       if (!storedLogDates) return;
 
       const dateArray: string[] = JSON.parse(storedLogDates);
+      const validDates = dateArray
+        .filter(isValidDateString)
+        .filter((d) => d <= today);
+
       const now = new Date();
       now.setHours(now.getHours() + 9);
       const startOfWeek = new Date(now);
@@ -83,7 +80,7 @@ const StreakDisplay = forwardRef((props, ref) => {
       endOfWeek.setDate(startOfWeek.getDate() + 6);
       endOfWeek.setHours(23, 59, 59, 999);
 
-      const weekdayIndexes = dateArray
+      const weekdayIndexes = validDates
         .map((dateStr) => {
           const d = new Date(dateStr);
           d.setHours(d.getHours() + 9);
@@ -219,3 +216,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF7F50",
   },
 });
+
