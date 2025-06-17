@@ -1,7 +1,6 @@
-// app/_layout.tsx
-
 import { Stack } from "expo-router";
 import { SelectedDateProvider } from "../data/DateContext";
+import { StreakProvider } from "../data/StreakContext";
 import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import * as SecureStore from "expo-secure-store";
@@ -41,7 +40,9 @@ export default function RootLayout() {
 
   return (
     <SelectedDateProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <StreakProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </StreakProvider>
     </SelectedDateProvider>
   );
 }

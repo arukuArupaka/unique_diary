@@ -18,6 +18,7 @@ import Hutter from "./hutter";
 import Input from "@/components/Input";
 import { useSuggestion } from "../components/Suggestion_Section";
 import StreakDisplay from "../components/StreakDisplay"; // ← 修正されたインポート
+import ContionuousIcon from "@/components/ContionuousIcon";
 
 const Index = () => {
   const now = new Date();
@@ -25,12 +26,8 @@ const Index = () => {
   const router = useRouter();
   const [diaryText, setDiaryText] = useState("");
 
-  const {
-    DailySuggestion,
-    LifeSuggestion,
-    CollegeSuggestion,
-    handleSwap,
-  } = useSuggestion();
+  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
+    useSuggestion();
 
   const [suggestionwhole, setsuggestionwhole] = useState(false);
 
@@ -46,7 +43,9 @@ const Index = () => {
 
     try {
       const today = new Date();
-      const key = `diary-${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+      const key = `diary-${today.getFullYear()}-${
+        today.getMonth() + 1
+      }-${today.getDate()}`;
       await AsyncStorage.setItem(key, diaryText);
 
       Alert.alert("保存完了", "日記が保存されました");
@@ -72,39 +71,7 @@ const Index = () => {
           <Input />
 
           {/* 🔥 連続記録セクション */}
-          <View
-            style={{
-              width: "100%",
-              height: "40%",
-              marginTop: 20,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                width: "25%",
-                height: "45%",
-                alignItems: "center",
-                justifyContent: "center",
-                marginHorizontal: "37%",
-              }}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-              }}
-            >
-              <FontAwesome5 name="fire" size={100} color="orange" />
-            </TouchableOpacity>
-
-            <View
-              style={{
-                width: "100%",
-                height: "55%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <StreakDisplay />
-            </View>
-          </View>
+          <ContionuousIcon />
         </View>
 
         <Hutter />

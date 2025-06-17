@@ -47,7 +47,7 @@ const Hetter = () => {
       />
       <TouchableOpacity
         onPress={() => {
-          router.push("/second"); //画面移動　エラーはあっても動く
+          router.push("/tesuto"); //画面移動　エラーはあっても動く
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         }}
         style={{

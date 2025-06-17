@@ -8,12 +8,13 @@ import React, {
 import { View, Text, StyleSheet, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
+import { useStreak } from "@/data/StreakContext";
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
 
 const StreakDisplay = forwardRef((props, ref) => {
-  const [streak, setStreak] = useState(0);
+  const { streak, setStreak } = useStreak(0);
   const [checkedWeekdays, setCheckedWeekdays] = useState<number[]>([]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const checkAnimations = useRef<Animated.Value[]>([]);
