@@ -6,6 +6,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useSelectedDate } from "@/data/DateContext";
 
+import { CardStyleInterpolators } from "@react-navigation/stack";
+
 import {
   SafeAreaView,
   Keyboard,
@@ -21,7 +23,6 @@ import { Calendar } from "react-native-calendars";
 import CustomCalendar from "../components/Calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import DraggableButton from "@/components/DraggableButton";
 
 const Second = () => {
   const formatDateKey = (dateString: string) => {

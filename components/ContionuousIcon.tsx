@@ -17,7 +17,7 @@ const ContionuousIcon = () => {
     return "#00FFFF";
   };
   useEffect(() => {
-    setStreak(51); // 一時的に数字をいじれる
+    setStreak(30); // 一時的に数字をいじれる
   }, []);
   const { streak, setStreak } = useStreak(0);
 
@@ -47,7 +47,7 @@ const ContionuousIcon = () => {
         >
           <FontAwesome5
             name="fire"
-            size={50 + streak * 2}
+            size={streak < 30 ? 50 + streak * 2 : 110}
             color={RankColor(streak)}
           />
         </TouchableOpacity>
