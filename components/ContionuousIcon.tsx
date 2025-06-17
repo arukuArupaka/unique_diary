@@ -6,6 +6,7 @@ import StreakDisplay from "./StreakDisplay";
 import * as Haptics from "expo-haptics";
 import { useEffect } from "react";
 import Tesuto from "@/app/tesuto";
+import * as Animatable from "react-native-animatable";
 
 const ContionuousIcon = () => {
   const RankColor = (streak: number): string => {
@@ -16,9 +17,9 @@ const ContionuousIcon = () => {
     if (streak < 30) return "purple";
     return "#00FFFF";
   };
-  useEffect(() => {
-    setStreak(30); // 一時的に数字をいじれる
-  }, []);
+  // useEffect(() => {
+  //   setStreak(40); // 一時的に数字をいじれる
+  // }, []);
   const { streak, setStreak } = useStreak(0);
 
   return (
