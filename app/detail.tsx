@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Keyboard,
   Text,
@@ -13,7 +13,7 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Hetter from "./hetter";
 import Hutter from "./hutter";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router"; // 追加部分です
 import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
 import i18n from "../utils/i18n";
@@ -27,22 +27,30 @@ const Detail = () => {
   );
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [themeModalVisible, setThemeModalVisible] = useState(false);
-  const [passcodeEnabled, setPasscodeEnabled] = useState(false); //passcodeの有効無効を判定
+  const [passcodeEnabled, setPasscodeEnabled] = useState(false); // passcode の有無
 
-  useEffect(() => {
-    const loadPasscodeStatus = async () => {
-      const enabled = await SecureStore.getItemAsync("passcode_enabled");
-      setPasscodeEnabled(enabled === "true");
-    };
-    loadPasscodeStatus();
+  /** SecureStore から状態を読み込む共通関数 */
+  const refreshPasscodeStatus = useCallback(async () => {
+    const enabled = await SecureStore.getItemAsync("passcode_enabled");
+    setPasscodeEnabled(enabled === "true");
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      refreshPasscodeStatus();
+    }, [refreshPasscodeStatus]) //パスコードの状態を更新
+  );
   const disablePasscode = async () => {
-    await SecureStore.deleteItemAsync("passcode");
-    await SecureStore.setItemAsync("passcode_enabled", "false");
-    setPasscodeEnabled(false);
-    Alert.alert("完了", "パスコード機能を無効にしました");
+    try {
+      await SecureStore.deleteItemAsync("passcode");
+      await SecureStore.deleteItemAsync("passcode_enabled");
+      setPasscodeEnabled(false);
+      Alert.alert("完了", "パスコード機能を無効にしました");
+    } catch (e) {
+      console.warn(e);
+    }
   };
+
   const changeLanguage = (lang: "ja" | "en") => {
     (i18n as any).locale = lang;
     setSelectedLanguage(lang);
@@ -114,6 +122,9 @@ const Detail = () => {
                   elevation: Platform.OS === "android" ? 2 : 0,
                 }}
                 onPress={() => {
+                  /* ここで最新値をローカルに取って分岐 */
+                  const currentEnabled = passcodeEnabled; // 追加部分です
+
                   if (item.label === (i18n as any).t("language")) {
                     setLanguageModalVisible(true);
                   } else if (item.label === (i18n as any).t("reminder")) {
@@ -125,7 +136,8 @@ const Detail = () => {
                   } else if (item.label === (i18n as any).t("theme")) {
                     setThemeModalVisible(true);
                   } else if (item.label === (i18n as any).t("passcode")) {
-                    if (!passcodeEnabled) {
+                    if (!currentEnabled) {
+                      // 追加部分です
                       router.push("/set-passcode");
                     } else {
                       Alert.alert(
@@ -134,7 +146,7 @@ const Detail = () => {
                         [
                           {
                             text: "キャンセル",
-                            style: "cancel", //iosだとボタンが左側になるらしい
+                            style: "cancel",
                           },
                           {
                             text: "無効にする",

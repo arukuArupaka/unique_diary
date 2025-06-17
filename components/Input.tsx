@@ -8,7 +8,6 @@ import { useSuggestion } from "../components/Suggestion_Section";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePathname } from "expo-router";
 import { useSelectedDate } from "@/data/DateContext";
-import inputPase from "@/app/InputPase";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
@@ -17,58 +16,70 @@ const Input = () => {
   const pathname = usePathname();
   const [suggestionwhole, setsuggestionwhole] = useState(false);
 
-  const getTodayString = () => {
+  // 共通化した日付取得関数（JSTのISO日付文字列）
+  const getTodayString = (): string => {
     const now = new Date();
     now.setHours(now.getHours() + 9); // JST補正
     return now.toISOString().split("T")[0];
   };
 
-  const updateStreak = async () => {
+  // 日付が正しいフォーマットかを判定する簡易関数
+  const isValidDateString = (dateStr: string) => {
+    return /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+  };
+
+  // ストリークを更新する関数（保存処理から分離）
+  const updateStreak = async (dateStr: string) => {
     try {
-      const today = getTodayString();
+      if (!isValidDateString(dateStr)) {
+        console.warn("updateStreak: 無効な日付文字列です", dateStr);
+        return;
+      }
+
       const storedDates = await AsyncStorage.getItem("logDates");
       let dateArray: string[] = storedDates ? JSON.parse(storedDates) : [];
 
-      // 今日が含まれていなければ追加
-      let streakNeedsUpdate = false;
-      if (!dateArray.includes(today)) {
-        dateArray.push(today);
-        streakNeedsUpdate = true;
+      // 重複防止のため一旦Setで管理
+      const dateSet = new Set(dateArray);
+
+      if (!dateSet.has(dateStr)) {
+        dateSet.add(dateStr);
+        dateArray = Array.from(dateSet).sort(); // 昇順ソートしておく
         await AsyncStorage.setItem("logDates", JSON.stringify(dateArray));
+      } else {
+        // 既に登録済みならストリーク更新不要
+        return;
       }
 
-      if (!streakNeedsUpdate) return; // すでに記録済みなら終了
-
-      // 重複を除去し、Set化
-      const uniqueDates = new Set(dateArray);
-
-      // 今日から1日ずつ遡って記録があるか確認
+      // 連続記録日数の計算
       let streak = 0;
-      let currentDate = new Date(today);
+      let currentDate = new Date(dateStr);
 
       while (true) {
-        const dateString = currentDate.toISOString().split("T")[0];
-        if (uniqueDates.has(dateString)) {
+        const checkStr = currentDate.toISOString().split("T")[0];
+        if (dateSet.has(checkStr)) {
           streak++;
-          currentDate.setDate(currentDate.getDate() - 1); // 1日前へ
+          currentDate.setDate(currentDate.getDate() - 1);
         } else {
           break;
         }
       }
 
       await AsyncStorage.setItem("streakCount", streak.toString());
-      await AsyncStorage.setItem("streakAnimationDate", today);
+      await AsyncStorage.setItem("streakAnimationDate", dateStr);
     } catch (error) {
       console.error("連続記録の更新中にエラー:", error);
     }
   };
 
+  // 日記保存処理
   const handleSave = async () => {
     if (diaryText.trim() === "") {
       Alert.alert("エラー", "日記の内容を入力してください");
       return;
     }
 
+    // 保存時間履歴を管理
     const saveDiaryTime = async () => {
       const now = new Date();
       const hour = now.getHours();
@@ -79,6 +90,12 @@ const Input = () => {
       await AsyncStorage.setItem("diary-time-history", JSON.stringify(updatedHistory));
     };
 
+    // 選択日付が有効な場合はそれを使い、なければ今日の日付を使う
+    const dateToSave =
+      pathname === "/InputPase" && isValidDateString(selectedDate)
+        ? selectedDate
+        : getTodayString();
+
     const formatDateKey = (dateString: string) => {
       const [year, month, day] = dateString.split("-");
       return `diary-${parseInt(year)}-${parseInt(month)}-${parseInt(day)}`;
@@ -87,16 +104,11 @@ const Input = () => {
     try {
       await saveDiaryTime();
 
-      const today = new Date();
-      const key = `diary-${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+      const key = formatDateKey(dateToSave);
 
-      if (pathname === "/InputPase") {
-        await AsyncStorage.setItem(formatDateKey(selectedDate), diaryText);
-      } else {
-        await AsyncStorage.setItem(key, diaryText);
-      }
+      await AsyncStorage.setItem(key, diaryText);
 
-      await updateStreak();
+      await updateStreak(dateToSave);
 
       Alert.alert("保存完了", "日記が保存されました");
       setDiaryText("");

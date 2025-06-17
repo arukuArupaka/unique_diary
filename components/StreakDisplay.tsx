@@ -50,23 +50,15 @@ const StreakDisplay = forwardRef((props, ref) => {
     }).start();
   };
 
-  const getTodayString = () => {
-    const now = new Date();
-    now.setHours(now.getHours() + 9); // JST補正
-    return now.toISOString().split("T")[0];
-  };
-
   const loadStreakAndWeekdays = async () => {
     try {
       const today = getTodayString();
       const storedStreak = await AsyncStorage.getItem("streakCount");
-      const streakNum = storedStreak ? parseInt(storedStreak) : 0;
+      const streakNum = storedStreak ? parseInt(storedStreak, 10) : 0;
       setStreak(streakNum);
 
       const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
-      if (animatedDate === today) {
-        // 今日のアニメーションはすでに実行済み → スキップ
-      } else {
+      if (animatedDate !== today) {
         startStreakAnimation();
         await AsyncStorage.setItem("streakAnimationDate", today);
       }
@@ -75,6 +67,10 @@ const StreakDisplay = forwardRef((props, ref) => {
       if (!storedLogDates) return;
 
       const dateArray: string[] = JSON.parse(storedLogDates);
+      const validDates = dateArray
+        .filter(isValidDateString)
+        .filter((d) => d <= today);
+
       const now = new Date();
       now.setHours(now.getHours() + 9);
       const startOfWeek = new Date(now);
@@ -84,7 +80,7 @@ const StreakDisplay = forwardRef((props, ref) => {
       endOfWeek.setDate(startOfWeek.getDate() + 6);
       endOfWeek.setHours(23, 59, 59, 999);
 
-      const weekdayIndexes = dateArray
+      const weekdayIndexes = validDates
         .map((dateStr) => {
           const d = new Date(dateStr);
           d.setHours(d.getHours() + 9);
