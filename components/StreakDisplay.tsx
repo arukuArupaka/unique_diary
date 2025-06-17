@@ -5,10 +5,11 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
 import { useStreak } from "@/data/StreakContext";
+import { getTodayString, isValidDateString } from "@/utils/date";
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
@@ -113,12 +114,9 @@ const StreakDisplay = forwardRef((props, ref) => {
 
   return (
     <View
-      style={{
-        alignItems: "center",
-        marginTop: -8,
-        paddingHorizontal: 10,
-      }}
+      style={{ alignItems: "center", marginTop: -8, paddingHorizontal: 10 }}
     >
+      {/* 連続日数表示 */}
       <View
         style={{
           flexDirection: "row",
@@ -140,22 +138,18 @@ const StreakDisplay = forwardRef((props, ref) => {
         >
           {streak}
         </Animated.Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "600",
-            color: "#000000",
-          }}
-        >
+        <Text style={{ fontSize: 20, fontWeight: "600", color: "#000000" }}>
           日連続記録
         </Text>
       </View>
 
+      {/* 曜日表示 */}
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          width: "95%",
+          width: "100%",
+          paddingHorizontal: 8,
         }}
       >
         {days.map((day, index) => {
@@ -165,9 +159,8 @@ const StreakDisplay = forwardRef((props, ref) => {
             <View
               key={index}
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "95%",
+                alignItems: "center",
+                width: 40,
               }}
             >
               <Text
@@ -200,12 +193,8 @@ const StreakDisplay = forwardRef((props, ref) => {
                     elevation: 3,
                   },
                   isChecked
-                    ? {
-                        backgroundColor: "#FF7F50",
-                      }
-                    : {
-                        backgroundColor: "#FFDAB9",
-                      },
+                    ? { backgroundColor: "#FF7F50" }
+                    : { backgroundColor: "#FFDAB9" },
                 ]}
               >
                 {isChecked && (
