@@ -6,14 +6,13 @@ import {
   TouchableWithoutFeedback,
   View,
   Alert,
-  Pressable,
   Platform,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Hetter from "./hetter";
 import Hutter from "./hutter";
-import { useRouter, useFocusEffect } from "expo-router"; // 追加部分です
+import { useRouter, useFocusEffect } from "expo-router";
 import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
 import i18n from "../utils/i18n";
@@ -21,75 +20,112 @@ import * as SecureStore from "expo-secure-store";
 
 const Detail = () => {
   const router = useRouter();
-  const [languageModalVisible, setLanguageModalVisible] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    (i18n as any).locale
-  );
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [themeModalVisible, setThemeModalVisible] = useState(false);
-  const [passcodeEnabled, setPasscodeEnabled] = useState(false); // passcode の有無
 
-  /** SecureStore から状態を読み込む共通関数 */
+  // 言語選択モーダルの表示状態
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  // 現在選択中の言語
+  const [selectedLanguage, setSelectedLanguage] = useState((i18n as any).locale);
+  // テーマ（light / dark）
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  // テーマ選択モーダルの表示状態
+  const [themeModalVisible, setThemeModalVisible] = useState(false);
+  // パスコード機能の有効無効
+  const [passcodeEnabled, setPasscodeEnabled] = useState(false);
+
+  // SecureStoreからパスコード有効状態を取得してstate更新
   const refreshPasscodeStatus = useCallback(async () => {
-    const enabled = await SecureStore.getItemAsync("passcode_enabled");
-    setPasscodeEnabled(enabled === "true");
+    try {
+      const enabled = await SecureStore.getItemAsync("passcode_enabled");
+      setPasscodeEnabled(enabled === "true");
+    } catch (e) {
+      console.warn("パスコード状態取得失敗", e);
+    }
   }, []);
 
+  // フォーカスされた時にパスコード状態を再読み込み
   useFocusEffect(
     useCallback(() => {
       refreshPasscodeStatus();
-    }, [refreshPasscodeStatus]) //パスコードの状態を更新
+    }, [refreshPasscodeStatus])
   );
+
+  // パスコード機能を無効にする（SecureStoreから削除）
   const disablePasscode = async () => {
     try {
       await SecureStore.deleteItemAsync("passcode");
       await SecureStore.deleteItemAsync("passcode_enabled");
       setPasscodeEnabled(false);
-      Alert.alert("完了", "パスコード機能を無効にしました");
+      Alert.alert(i18n.t("done"), i18n.t("passcodeDisabledMessage"));
     } catch (e) {
-      console.warn(e);
+      console.warn("パスコード無効化失敗", e);
     }
   };
 
+  // 言語を切り替える処理
   const changeLanguage = (lang: "ja" | "en") => {
     (i18n as any).locale = lang;
     setSelectedLanguage(lang);
     setLanguageModalVisible(false);
   };
 
+  // 設定項目リスト
   const settingItems = [
     {
-      label: (i18n as any).t("theme"),
+      label: i18n.t("theme"),
       iconLib: MaterialCommunityIcons,
       iconName: "theme-light-dark",
+      onPress: () => setThemeModalVisible(true),
     },
     {
-      label: (i18n as any).t("passcode"),
+      label: i18n.t("passcode"),
       iconLib: Feather,
       iconName: "lock",
+      onPress: () => {
+        if (!passcodeEnabled) {
+          router.push("/set-passcode");
+        } else {
+          Alert.alert(
+            i18n.t("warning"),
+            i18n.t("passcodeDisableConfirmMessage"),
+            [
+              { text: i18n.t("cancel"), style: "cancel" },
+              { text: i18n.t("disable"), style: "destructive", onPress: disablePasscode },
+            ],
+            { cancelable: true }
+          );
+        }
+      },
     },
     {
-      label: (i18n as any).t("reminder"),
+      label: i18n.t("reminder"),
       iconLib: Feather,
       iconName: "bell",
+      onPress: () => {
+        scheduleDailyNotification();
+        Alert.alert(i18n.t("setNotificationTitle"), i18n.t("setNotificationMessage"));
+      },
     },
     {
-      label: (i18n as any).t("language"),
+      label: i18n.t("language"),
       iconLib: Feather,
       iconName: "settings",
+      onPress: () => setLanguageModalVisible(true),
     },
     {
-      label: (i18n as any).t("otherC"),
+      label: i18n.t("dailyHistory"),
       iconLib: Feather,
-      iconName: "settings",
+      iconName: "calendar",
+      onPress: () => router.push("/history/daily"),
     },
     {
-      label: (i18n as any).t("otherD"),
+      label: i18n.t("monthlyStats"),
       iconLib: Feather,
-      iconName: "settings",
+      iconName: "chart-bar",
+      onPress: () => router.push("/history/monthly"),
     },
   ];
 
+  // テーマによる色の切り替え
   const backgroundColor = theme === "light" ? "#f2f3f5" : "#121212";
   const cardColor = theme === "light" ? "#fff" : "#1e1e1e";
   const textColor = theme === "light" ? "#333" : "#f5f5f5";
@@ -121,53 +157,10 @@ const Detail = () => {
                   shadowRadius: 6,
                   elevation: Platform.OS === "android" ? 2 : 0,
                 }}
-                onPress={() => {
-                  /* ここで最新値をローカルに取って分岐 */
-                  const currentEnabled = passcodeEnabled; // 追加部分です
-
-                  if (item.label === (i18n as any).t("language")) {
-                    setLanguageModalVisible(true);
-                  } else if (item.label === (i18n as any).t("reminder")) {
-                    scheduleDailyNotification();
-                    Alert.alert(
-                      (i18n as any).t("setNotificationTitle"),
-                      (i18n as any).t("setNotificationMessage")
-                    );
-                  } else if (item.label === (i18n as any).t("theme")) {
-                    setThemeModalVisible(true);
-                  } else if (item.label === (i18n as any).t("passcode")) {
-                    if (!currentEnabled) {
-                      // 追加部分です
-                      router.push("/set-passcode");
-                    } else {
-                      Alert.alert(
-                        "警告",
-                        "現在記憶しているパスコードを一度削除してよろしいですか？",
-                        [
-                          {
-                            text: "キャンセル",
-                            style: "cancel",
-                          },
-                          {
-                            text: "無効にする",
-                            style: "destructive",
-                            onPress: () => disablePasscode(),
-                          },
-                        ],
-                        { cancelable: true }
-                      );
-                    }
-                  } else {
-                    console.log(`${item.label} が押されました`);
-                  }
-                }}
+                onPress={item.onPress}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Icon
-                    name={item.iconName as any}
-                    size={24}
-                    color={iconColor}
-                  />
+                  <Icon name={item.iconName as any} size={24} color={iconColor} />
                   <Text
                     style={{
                       fontSize: 16,
