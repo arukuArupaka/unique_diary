@@ -5,6 +5,7 @@ import StreakDisplay from "./StreakDisplay";
 
 import * as Haptics from "expo-haptics";
 import { useEffect } from "react";
+import Tesuto from "@/app/tesuto";
 
 const ContionuousIcon = () => {
   const RankColor = (streak: number): string => {
@@ -16,7 +17,7 @@ const ContionuousIcon = () => {
     return "#00FFFF";
   };
   useEffect(() => {
-    setStreak(50); // 一時的に数字をいじれる
+    setStreak(51); // 一時的に数字をいじれる
   }, []);
   const { streak, setStreak } = useStreak(0);
 
@@ -29,24 +30,28 @@ const ContionuousIcon = () => {
       }}
     >
       {/*🔥連続記録 */}
-      <TouchableOpacity
-        style={{
-          width: "25%",
-          height: "45%",
-          alignItems: "center",
-          justifyContent: "flex-end", //下に行く
-          marginHorizontal: "37%",
-        }}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        }}
-      >
-        <FontAwesome5
-          name="fire"
-          size={50 + streak * 2}
-          color={RankColor(streak)}
-        />
-      </TouchableOpacity>
+      {streak > 50 ? (
+        <Tesuto />
+      ) : (
+        <TouchableOpacity
+          style={{
+            width: "25%",
+            height: "45%",
+            alignItems: "center",
+            justifyContent: "flex-end", //下に行く
+            marginHorizontal: "37%",
+          }}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+          }}
+        >
+          <FontAwesome5
+            name="fire"
+            size={50 + streak * 2}
+            color={RankColor(streak)}
+          />
+        </TouchableOpacity>
+      )}
 
       <View
         style={{

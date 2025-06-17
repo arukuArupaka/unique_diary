@@ -16,8 +16,8 @@ import MaskedView from "@react-native-masked-view/masked-view";
 const CARD_IMAGE = {
   uri: "https://images.unsplash.com/photo-1549421254-b088a3e35594?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3087&q=80",
 };
-const CARD_WIDTH = 340;
-const CARD_HEIGHT = 220;
+const CARD_WIDTH = 400;
+const CARD_HEIGHT = 150;
 
 // ホログラム風のカラフルなグラデーション色
 const HOLO_COLORS = [
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     borderRadius: 20,
     // カードの背景を白にする
-    backgroundColor: "white",
+    backgroundColor: "#f8f8ff",
     // 影
     shadowColor: "#fff",
     shadowOffset: { width: 0, height: 0 },
