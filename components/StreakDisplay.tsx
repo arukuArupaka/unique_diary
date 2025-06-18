@@ -5,13 +5,25 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { View, Text, Animated } from "react-native";
+import { View, Text, Animated, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-import { useStreak } from "@/data/StreakContext";
+import { useStreak } from "@/data/StreakContext"; // 使っていなければ削除してください
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
+
+// isValidDateString の簡易実装
+function isValidDateString(dateStr: string): boolean {
+  // YYYY-MM-DDの形式チェックと有効日付チェック
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return false;
+
+  // 入力文字列とDateから生成した文字列の整合性を確認（例：2023-02-30は無効）
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return date.getFullYear() === y && date.getMonth() + 1 === m && date.getDate() === d;
+}
 
 const StreakDisplay = forwardRef((props, ref) => {
   const [streak, setStreak] = useState<number>(0);
@@ -50,13 +62,11 @@ const StreakDisplay = forwardRef((props, ref) => {
     }).start();
   };
 
-  
   const getTodayWithJST = (): string => {
     const now = new Date();
     now.setHours(now.getHours() + 9); // JST補正
     return now.toISOString().split("T")[0];
   };
-
 
   const loadStreakAndWeekdays = async () => {
     try {
@@ -120,92 +130,29 @@ const StreakDisplay = forwardRef((props, ref) => {
   }));
 
   return (
-    <View
-      style={{
-        alignItems: "center",
-        marginTop: -8,
-        paddingHorizontal: 10,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "baseline",
-          justifyContent: "center",
-          marginBottom: 16,
-        }}
-      >
+    <View style={styles.container}>
+      <View style={styles.streakRow}>
         <Animated.Text
           style={[styles.streakNumber, { transform: [{ scale: scaleAnim }] }]}
         >
           {streak}
         </Animated.Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "600",
-            color: "#000000",
-          }}
-        >
-          日連続記録
-        </Text>
+        <Text style={styles.streakLabel}>日連続記録</Text>
       </View>
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "95%",
-        }}
-      >
+      <View style={styles.daysContainer}>
         {days.map((day, index) => {
           const isChecked = checkedWeekdays.includes(index);
           const isToday = index === todayIndex;
           return (
-            <View
-              key={index}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "95%",
-              }}
-            >
-              <Text
-                style={[
-                  {
-                    fontSize: 14,
-                    color: "#444",
-                    marginBottom: 4,
-                  },
-                  isToday && {
-                    fontWeight: "700",
-                    color: "#3B3B3B",
-                  },
-                ]}
-              >
+            <View key={index} style={styles.dayItem}>
+              <Text style={[styles.dayText, isToday && styles.todayText]}>
                 {day}
               </Text>
               <View
                 style={[
-                  {
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    shadowColor: "#000",
-                    shadowOpacity: 0.1,
-                    shadowRadius: 3,
-                    shadowOffset: { width: 0, height: 2 },
-                    elevation: 3,
-                  },
-                  isChecked
-                    ? {
-                        backgroundColor: "#FF7F50",
-                      }
-                    : {
-                        backgroundColor: "#FFDAB9",
-                      },
+                  styles.circle,
+                  isChecked ? styles.checkedCircle : styles.emptyCircle,
                 ]}
               >
                 {isChecked && (
