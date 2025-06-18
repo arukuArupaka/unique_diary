@@ -33,7 +33,7 @@ const Hetter = () => {
       >
         {todayString} {/* 今日の日付を表示 */}
       </Text>
-      <Feather
+      {/* <Feather
         name="bell"
         size={31}
         color="black"
@@ -87,10 +87,10 @@ const Hetter = () => {
               textAlign: "center",
             }}
           >
-            {day} {/* 今日の日の「日」の部分を表示 */}
+            {day} {/* 今日の日の「日」の部分を表示 
           </Text>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

@@ -1,7 +1,8 @@
 import React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { Gyroscope } from "expo-sensors";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Haptics from "expo-haptics";
 import Animated, {
   useAnimatedStyle,
   useAnimatedSensor,
@@ -72,7 +73,12 @@ export default function Tesuto() {
   });
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      }}
+    >
       <Animated.View style={[styles.card, animatedCardStyle]}>
         <MaskedView
           style={StyleSheet.absoluteFill}
@@ -95,7 +101,7 @@ export default function Tesuto() {
           </Animated.View>
         </MaskedView>
       </Animated.View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
