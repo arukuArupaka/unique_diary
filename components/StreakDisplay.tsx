@@ -5,10 +5,10 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-import { getTodayString, isValidDateString } from "../utils/date"; // 相対パスに変更済み
+import { useStreak } from "@/data/StreakContext";
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
@@ -120,29 +120,92 @@ const StreakDisplay = forwardRef((props, ref) => {
   }));
 
   return (
-    <View style={styles.container}>
-      <View style={styles.streakRow}>
+    <View
+      style={{
+        alignItems: "center",
+        marginTop: -8,
+        paddingHorizontal: 10,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "baseline",
+          justifyContent: "center",
+          marginBottom: 16,
+        }}
+      >
         <Animated.Text
           style={[styles.streakNumber, { transform: [{ scale: scaleAnim }] }]}
         >
           {streak}
         </Animated.Text>
-        <Text style={styles.streakLabel}>日連続記録</Text>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "600",
+            color: "#000000",
+          }}
+        >
+          日連続記録
+        </Text>
       </View>
 
-      <View style={styles.daysContainer}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          width: "95%",
+        }}
+      >
         {days.map((day, index) => {
           const isChecked = checkedWeekdays.includes(index);
           const isToday = index === todayIndex;
           return (
-            <View key={index} style={styles.dayItem}>
-              <Text style={[styles.dayText, isToday && styles.todayText]}>
+            <View
+              key={index}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "95%",
+              }}
+            >
+              <Text
+                style={[
+                  {
+                    fontSize: 14,
+                    color: "#444",
+                    marginBottom: 4,
+                  },
+                  isToday && {
+                    fontWeight: "700",
+                    color: "#3B3B3B",
+                  },
+                ]}
+              >
                 {day}
               </Text>
               <View
                 style={[
-                  styles.circle,
-                  isChecked ? styles.checkedCircle : styles.emptyCircle,
+                  {
+                    width: 32,
+                    height: 32,
+                    borderRadius: 16,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    shadowColor: "#000",
+                    shadowOpacity: 0.1,
+                    shadowRadius: 3,
+                    shadowOffset: { width: 0, height: 2 },
+                    elevation: 3,
+                  },
+                  isChecked
+                    ? {
+                        backgroundColor: "#FF7F50",
+                      }
+                    : {
+                        backgroundColor: "#FFDAB9",
+                      },
                 ]}
               >
                 {isChecked && (

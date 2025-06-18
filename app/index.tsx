@@ -11,13 +11,11 @@ import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// 自作コンポーネント
 import Hetter from "./hetter";
 import Hutter from "./hutter";
 import Input from "@/components/Input";
 import { useSuggestion } from "../components/Suggestion_Section";
-import StreakDisplay from "../components/StreakDisplay"; // ← 修正されたインポート
+import StreakDisplay from "../components/StreakDisplay";
 import ContionuousIcon from "@/components/ContionuousIcon";
 
 const Index = () => {

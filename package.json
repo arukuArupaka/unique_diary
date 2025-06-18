@@ -18,7 +18,11 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+<<<<<<< HEAD
     "dayjs": "^1.11.13",
+=======
+    "@react-navigation/stack": "^7.3.4",
+>>>>>>> c981ad1761956a3565a913ae892afa1a6079281b
     "expo": "~53.0.8",
     "expo-blur": "~14.1.4",
     "expo-constants": "~17.1.6",
