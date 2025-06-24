@@ -24,7 +24,9 @@ const Detail = () => {
   // 言語選択モーダルの表示状態
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   // 現在選択中の言語
-  const [selectedLanguage, setSelectedLanguage] = useState((i18n as any).locale);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    (i18n as any).locale
+  );
   // テーマ（light / dark）
   const [theme, setTheme] = useState<"light" | "dark">("light");
   // テーマ選択モーダルの表示状態
@@ -70,12 +72,12 @@ const Detail = () => {
 
   // 設定項目リスト
   const settingItems = [
-    {
-      label: i18n.t("theme"),
-      iconLib: MaterialCommunityIcons,
-      iconName: "theme-light-dark",
-      onPress: () => setThemeModalVisible(true),
-    },
+    // {
+    //   label: i18n.t("theme"),
+    //   iconLib: MaterialCommunityIcons,
+    //   iconName: "theme-light-dark",
+    //   onPress: () => setThemeModalVisible(true),
+    // },
     {
       label: i18n.t("passcode"),
       iconLib: Feather,
@@ -89,7 +91,11 @@ const Detail = () => {
             i18n.t("passcodeDisableConfirmMessage"),
             [
               { text: i18n.t("cancel"), style: "cancel" },
-              { text: i18n.t("disable"), style: "destructive", onPress: disablePasscode },
+              {
+                text: i18n.t("disable"),
+                style: "destructive",
+                onPress: disablePasscode,
+              },
             ],
             { cancelable: true }
           );
@@ -102,27 +108,30 @@ const Detail = () => {
       iconName: "bell",
       onPress: () => {
         scheduleDailyNotification();
-        Alert.alert(i18n.t("setNotificationTitle"), i18n.t("setNotificationMessage"));
+        Alert.alert(
+          i18n.t("setNotificationTitle"),
+          i18n.t("setNotificationMessage")
+        );
       },
     },
-    {
-      label: i18n.t("language"),
-      iconLib: Feather,
-      iconName: "settings",
-      onPress: () => setLanguageModalVisible(true),
-    },
-    {
-      label: i18n.t("dailyHistory"),
-      iconLib: Feather,
-      iconName: "calendar",
-      onPress: () => router.push("/history/daily"),
-    },
-    {
-      label: i18n.t("monthlyStats"),
-      iconLib: Feather,
-      iconName: "chart-bar",
-      onPress: () => router.push("/history/monthly"),
-    },
+    // {
+    //   label: i18n.t("language"),
+    //   iconLib: Feather,
+    //   iconName: "settings",
+    //   onPress: () => setLanguageModalVisible(true),
+    // },
+    // {
+    //   label: i18n.t("dailyHistory"),
+    //   iconLib: Feather,
+    //   iconName: "calendar",
+    //   onPress: () => router.push("/history/daily"),
+    // },
+    // {
+    //   label: i18n.t("monthlyStats"),
+    //   iconLib: Feather,
+    //   iconName: "chart-bar",
+    //   onPress: () => router.push("/history/monthly"),
+    // },
   ];
 
   // テーマによる色の切り替え
@@ -160,7 +169,11 @@ const Detail = () => {
                 onPress={item.onPress}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Icon name={item.iconName as any} size={24} color={iconColor} />
+                  <Icon
+                    name={item.iconName as any}
+                    size={24}
+                    color={iconColor}
+                  />
                   <Text
                     style={{
                       fontSize: 16,
