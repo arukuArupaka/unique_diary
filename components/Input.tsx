@@ -16,42 +16,34 @@ const Input = () => {
   const pathname = usePathname();
   const [suggestionwhole, setsuggestionwhole] = useState(false);
 
-  // 共通化した日付取得関数（JSTのISO日付文字列）
   const getTodayString = (): string => {
     const now = new Date();
-    now.setHours(now.getHours() + 9); // JST補正
+    now.setHours(now.getHours() + 9);
     return now.toISOString().split("T")[0];
   };
 
-  // 日付が正しいフォーマットかを判定する簡易関数
   const isValidDateString = (dateStr: string) => {
     return /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
   };
 
-  // ストリークを更新する関数（保存処理から分離）
   const updateStreak = async (dateStr: string) => {
     try {
-      if (!isValidDateString(dateStr)) {
-        console.warn("updateStreak: 無効な日付文字列です", dateStr);
-        return;
-      }
+      const today = getTodayString();
+      if (dateStr !== today) return; // 今日以外の日付は無視
 
       const storedDates = await AsyncStorage.getItem("logDates");
       let dateArray: string[] = storedDates ? JSON.parse(storedDates) : [];
 
-      // 重複防止のため一旦Setで管理
       const dateSet = new Set(dateArray);
 
       if (!dateSet.has(dateStr)) {
         dateSet.add(dateStr);
-        dateArray = Array.from(dateSet).sort(); // 昇順ソートしておく
+        dateArray = Array.from(dateSet).sort();
         await AsyncStorage.setItem("logDates", JSON.stringify(dateArray));
       } else {
-        // 既に登録済みならストリーク更新不要
         return;
       }
 
-      // 連続記録日数の計算
       let streak = 0;
       let currentDate = new Date(dateStr);
 
@@ -72,14 +64,12 @@ const Input = () => {
     }
   };
 
-  // 日記保存処理
   const handleSave = async () => {
     if (diaryText.trim() === "") {
       Alert.alert("エラー", "日記の内容を入力してください");
       return;
     }
 
-    // 保存時間履歴を管理
     const saveDiaryTime = async () => {
       const now = new Date();
       const hour = now.getHours();
@@ -90,7 +80,6 @@ const Input = () => {
       await AsyncStorage.setItem("diary-time-history", JSON.stringify(updatedHistory));
     };
 
-    // 選択日付が有効な場合はそれを使い、なければ今日の日付を使う
     const dateToSave =
       pathname === "/InputPase" && isValidDateString(selectedDate)
         ? selectedDate
@@ -105,7 +94,6 @@ const Input = () => {
       await saveDiaryTime();
 
       const key = formatDateKey(dateToSave);
-
       await AsyncStorage.setItem(key, diaryText);
 
       await updateStreak(dateToSave);

@@ -8,21 +8,20 @@ import React, {
 import { View, Text, Animated, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-import { useStreak } from "@/data/StreakContext"; // 使っていなければ削除してください
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
 
-// isValidDateString の簡易実装
 function isValidDateString(dateStr: string): boolean {
-  // YYYY-MM-DDの形式チェックと有効日付チェック
   if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
   const date = new Date(dateStr);
   if (Number.isNaN(date.getTime())) return false;
-
-  // 入力文字列とDateから生成した文字列の整合性を確認（例：2023-02-30は無効）
   const [y, m, d] = dateStr.split("-").map(Number);
-  return date.getFullYear() === y && date.getMonth() + 1 === m && date.getDate() === d;
+  return (
+    date.getFullYear() === y &&
+    date.getMonth() + 1 === m &&
+    date.getDate() === d
+  );
 }
 
 const StreakDisplay = forwardRef((props, ref) => {
@@ -71,14 +70,14 @@ const StreakDisplay = forwardRef((props, ref) => {
   const loadStreakAndWeekdays = async () => {
     try {
       const today = getTodayWithJST();
+
       const storedStreak = await AsyncStorage.getItem("streakCount");
       const streakNum = storedStreak ? parseInt(storedStreak, 10) : 0;
       setStreak(streakNum);
 
       const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
-      if (animatedDate !== today) {
+      if (animatedDate === today) {
         startStreakAnimation();
-        await AsyncStorage.setItem("streakAnimationDate", today);
       }
 
       const storedLogDates = await AsyncStorage.getItem("logDates");
