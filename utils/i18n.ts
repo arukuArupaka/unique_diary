@@ -22,7 +22,8 @@ const translations = {
     warning: "警告",
     done: "完了",
     passcodeDisabledMessage: "パスコード機能を無効にしました",
-    passcodeDisableConfirmMessage: "現在記憶しているパスコードを一度削除してよろしいですか？",
+    passcodeDisableConfirmMessage:
+      "現在記憶しているパスコードを一度削除してよろしいですか？",
     setNotificationTitle: "通知を設定しました",
     setNotificationMessage: "毎日20時にリマインドされます!",
     light: "ライト",
@@ -46,7 +47,8 @@ const translations = {
     warning: "Warning",
     done: "Done",
     passcodeDisabledMessage: "Passcode feature disabled",
-    passcodeDisableConfirmMessage: "Are you sure you want to delete the saved passcode?",
+    passcodeDisableConfirmMessage:
+      "Are you sure you want to delete the saved passcode?",
     setNotificationTitle: "Notification Set",
     setNotificationMessage: "You will be reminded daily at 8 PM!",
     light: "Light",
