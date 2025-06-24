@@ -99,6 +99,8 @@ const Second = () => {
           {/* 日記表示 */}
           <View
             style={{
+              width: "100%",
+              height: "38%",
               backgroundColor: "",
               paddingHorizontal: "10%",
               paddingTop: "10%",
@@ -114,17 +116,6 @@ const Second = () => {
               </Text>
             )}
             <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
-            <View style={{ marginTop: 20 }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold", //太くなる。
-                }}
-              >
-                今日の日記：
-              </Text>
-              <Text style={{ fontSize: 18, marginTop: 10 }}>{todayDiary}</Text>
-            </View>
           </View>
           {/* 日記入力画面への移動 */}
           <TouchableOpacity
@@ -133,8 +124,7 @@ const Second = () => {
               useRouter().push("/InputPase");
             }}
             style={{
-              marginTop: "23%",
-              marginLeft: "81%",
+              marginLeft: "80%",
               width: 60,
               height: 60,
               borderRadius: 40,

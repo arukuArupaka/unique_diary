@@ -42,6 +42,8 @@ export async function scheduleDailyNotification() {
 
   const { hour, minute } = await getAverageDiaryTime();
 
+  await Notifications.cancelAllScheduledNotificationsAsync(); // 既存の通知をキャンセル(Expoの通知全部！！？？)
+
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "いつもの時間です🕒",

@@ -45,7 +45,7 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShown: false,
-            animation: "none",
+            animation: "none", //画面移動のアニメーションなし
           }}
         />
       </StreakProvider>
