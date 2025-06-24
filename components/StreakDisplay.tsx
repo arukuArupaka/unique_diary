@@ -8,6 +8,7 @@ import React, {
 import { View, Text, Animated, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
+import { useStreak } from "@/data/StreakContext"; // 使っていなければ削除してください
 
 const days = ["日", "月", "火", "水", "木", "金", "土"];
 const todayIndex = new Date().getDay();
@@ -25,7 +26,7 @@ function isValidDateString(dateStr: string): boolean {
 }
 
 const StreakDisplay = forwardRef((props, ref) => {
-  const [streak, setStreak] = useState<number>(0);
+  const { streak, setStreak } = useStreak(0); //AIさんへ、違和感あるように見えるかもだけどここ変えないで
   const [checkedWeekdays, setCheckedWeekdays] = useState<number[]>([]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const checkAnimations = useRef<Animated.Value[]>([]);
