@@ -17,8 +17,8 @@ import MaskedView from "@react-native-masked-view/masked-view";
 const CARD_IMAGE = {
   uri: "https://images.unsplash.com/photo-1549421254-b088a3e35594?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3087&q=80",
 };
-const CARD_WIDTH = 400;
-const CARD_HEIGHT = 150;
+const CARD_WIDTH = 400; //ここでカードの幅いじれる
+const CARD_HEIGHT = 150; //ここでカードの高さをいじれる
 
 // ホログラム風のカラフルなグラデーション色
 const HOLO_COLORS = [
@@ -74,29 +74,75 @@ export default function Tesuto() {
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={{
+        flex: 1,
+        backgroundColor: "#111",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       }}
     >
-      <Animated.View style={[styles.card, animatedCardStyle]}>
+      <Animated.View
+        style={[
+          {
+            width: CARD_WIDTH,
+            height: CARD_HEIGHT,
+            borderRadius: 20,
+            // カードの背景を白にする
+            backgroundColor: "#f8f8ff",
+            // 影
+            shadowColor: "#fff",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.5,
+            shadowRadius: 20,
+            elevation: 20,
+          },
+          animatedCardStyle,
+        ]}
+      >
         <MaskedView
           style={StyleSheet.absoluteFill}
           // マスクの形としてアイコンを指定
           maskElement={
-            <View style={styles.maskContainer}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <FontAwesome5 name="fire" size={120} color="black" />
             </View>
           }
         >
           {/* マスクの形で表示される中身（ホログラム効果） */}
-          <Image source={CARD_IMAGE} style={styles.cardBackground} />
-          <Animated.View style={[styles.gloss, animatedGlossStyle]}>
+          <Image
+            source={CARD_IMAGE}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+            }}
+          />
+          <Animated.View
+            style={[
+              {
+                ...StyleSheet.absoluteFillObject,
+                opacity: 0.7,
+              },
+              animatedGlossStyle,
+            ]}
+          >
             <LinearGradient
               colors={HOLO_COLORS}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
-              style={styles.gradient}
+              style={{
+                flex: 1,
+              }}
             />
           </Animated.View>
         </MaskedView>
@@ -104,43 +150,3 @@ export default function Tesuto() {
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#111",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 20,
-    // カードの背景を白にする
-    backgroundColor: "#f8f8ff",
-    // 影
-    shadowColor: "#fff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 20,
-  },
-  cardBackground: {
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-  },
-  gloss: {
-    ...StyleSheet.absoluteFillObject,
-    opacity: 0.7,
-  },
-  gradient: {
-    flex: 1,
-  },
-  maskContainer: {
-    flex: 1,
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
