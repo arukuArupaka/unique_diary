@@ -1,92 +1,78 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Hetter from "../hetter";  // ✅ 正しいパスに修正
-import Hutter from "../hutter";  // ✅ 正しいパスに修正
+import dayjs from "dayjs";
 
-type StreakRecord = {
-  date: string; // 形式: "YYYY-MM-DD"
-  wrote: boolean;
+type DiaryEntry = {
+  date: string; // ex: "2025-6-23"
+  content: string;
 };
 
-const HistoryMonthly = () => {
-  const [monthlyStats, setMonthlyStats] = useState<{
-    month: string;
-    daysWritten: number;
-    longestStreak: number;
-  } | null>(null);
+const screenWidth = Dimensions.get("window").width;
+
+const HistoryMonthlyGraph = () => {
+  const [daysWritten, setDaysWritten] = useState(0);
+  const [logDates, setLogDates] = useState<string[]>([]);
+  const [streakCount, setStreakCount] = useState(0);
+  const [monthStr, setMonthStr] = useState("");
 
   useEffect(() => {
-    const calculateStats = async () => {
+    const loadStats = async () => {
       try {
-        const json = await AsyncStorage.getItem("streakHistory");
-        if (!json) return;
+        // 今の年月（例: 2025-6）
+        const now = dayjs();
+        const thisMonthStr = `${now.year()}-${now.month() + 1}`;
+        setMonthStr(thisMonthStr);
 
-        const history: StreakRecord[] = JSON.parse(json);
-        if (history.length === 0) return;
+        // キー取得
+        const allKeys = await AsyncStorage.getAllKeys();
+        const diaryKeys = allKeys.filter((k) => k.startsWith("diary-"));
 
-        // 今月の年月文字列（例: 2025-06）
-        const now = new Date();
-        const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-
-        // 今月の履歴を抽出
-        const thisMonthRecords = history.filter((rec) => rec.date.startsWith(monthStr));
-
-        // 書いた日数
-        const daysWritten = thisMonthRecords.filter((rec) => rec.wrote).length;
-
-        // 最長ストリーク計算
-        let longestStreak = 0;
-        let currentStreak = 0;
-        let prevDate: Date | null = null;
-
-        for (const rec of thisMonthRecords.sort((a, b) => a.date.localeCompare(b.date))) {
-          if (rec.wrote) {
-            const currentDate = new Date(rec.date);
-            if (
-              prevDate &&
-              (currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24) === 1
-            ) {
-              currentStreak++;
-            } else {
-              currentStreak = 1;
-            }
-
-            if (currentStreak > longestStreak) {
-              longestStreak = currentStreak;
-            }
-
-            prevDate = currentDate;
-          } else {
-            currentStreak = 0;
-            prevDate = null;
+        // 対象月のキーだけ抽出し、日付配列作成
+        const filteredDates: string[] = [];
+        for (const key of diaryKeys) {
+          // key: diary-YYYY-M-D
+          const dateStr = key.replace("diary-", ""); // ex: "2025-6-23"
+          if (dateStr.startsWith(thisMonthStr)) {
+            filteredDates.push(dateStr);
           }
         }
 
-        setMonthlyStats({ month: monthStr, daysWritten, longestStreak });
+        setLogDates(filteredDates);
+        setDaysWritten(filteredDates.length);
+
+        // 連続記録（保存済み値をAsyncStorageから取得）
+        const streakRaw = await AsyncStorage.getItem("streakCount");
+        setStreakCount(streakRaw ? parseInt(streakRaw, 10) : 0);
       } catch (e) {
-        console.warn("月別統計の読み込み失敗", e);
+        console.warn("統計読み込みエラー", e);
       }
     };
-
-    calculateStats();
+    loadStats();
   }, []);
 
+  // 棒グラフ幅の最大を画面幅の8割に設定
+  const maxBarWidth = screenWidth * 0.8;
+  // 月の日数（今月の最終日）
+  const daysInMonth = dayjs(monthStr + "-01").daysInMonth();
+
+  // 書いた日数の割合（0~1）
+  const ratio = daysWritten / daysInMonth;
+  const barWidth = maxBarWidth * ratio;
+
   return (
-    <View style={styles.container}>
-      <Hetter />
-      <Text style={styles.title}>月別統計</Text>
-      {monthlyStats ? (
-        <View style={styles.card}>
-          <Text style={styles.text}>{monthlyStats.month} の統計</Text>
-          <Text style={styles.text}>この月は {monthlyStats.daysWritten} 日書きました</Text>
-          <Text style={styles.text}>今月の最長ストリークは {monthlyStats.longestStreak} 日</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>📊 {monthStr} の月別統計</Text>
+      <View style={styles.statsCard}>
+        <Text style={styles.statText}>この月の日記を書いた日数: {daysWritten}日 / {daysInMonth}日</Text>
+
+        <View style={styles.barBackground}>
+          <View style={[styles.barFill, { width: barWidth }]} />
         </View>
-      ) : (
-        <Text style={styles.text}>統計情報がありません</Text>
-      )}
-      <Hutter />
-    </View>
+
+        <Text style={styles.statText}>現在の連続記録: {streakCount}日</Text>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -98,7 +84,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     textAlign: "center",
   },
-  card: {
+  statsCard: {
     backgroundColor: "white",
     marginHorizontal: 20,
     borderRadius: 12,
@@ -107,11 +93,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 3,
+    alignItems: "center",
   },
-  text: {
+  statText: {
     fontSize: 18,
-    marginVertical: 6,
+    marginVertical: 10,
+  },
+  barBackground: {
+    width: "80%",
+    height: 24,
+    backgroundColor: "#ddd",
+    borderRadius: 12,
+    overflow: "hidden",
+    marginVertical: 10,
+  },
+  barFill: {
+    height: "100%",
+    backgroundColor: "#4db5ff",
+    borderRadius: 12,
   },
 });
 
-export default HistoryMonthly;
+export default HistoryMonthlyGraph;

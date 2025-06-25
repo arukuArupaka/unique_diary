@@ -1,58 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 
-type Entry = {
-  date: string;
-  content: string;
-};
-
-const DailyHistory = () => {
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [maxStreak, setMaxStreak] = useState<number>(0);
+const HistoryMonthly = () => {
+  const [monthlyStats, setMonthlyStats] = useState<{
+    month: string;
+    daysWritten: number;
+    longestStreak: number;
+  } | null>(null);
 
   useEffect(() => {
-    const loadEntries = async () => {
+    const calculateStats = async () => {
       try {
+        // AsyncStorage のキーをすべて取得
         const allKeys = await AsyncStorage.getAllKeys();
+        // diary-で始まるキーだけ抽出
         const diaryKeys = allKeys.filter((key) => key.startsWith("diary-"));
         const diaryEntries = await AsyncStorage.multiGet(diaryKeys);
 
-        const parsedEntries = diaryEntries.map(([key, value]) => {
-          const date = key.replace("diary-", "");
-          let displayText = "";
-          if (value) {
-            try {
-              const parsed = JSON.parse(value);
-              if (typeof parsed === "object" && parsed !== null && "text" in parsed) {
-                displayText = parsed.text;
-              } else {
-                displayText = value;
-              }
-            } catch {
-              displayText = value;
-            }
-          }
-          return { date, content: displayText };
-        });
+        // 今の年月（例: 2025-06）
+        const now = new Date();
+        const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-        // 日付の昇順にソート（古い順）
-        parsedEntries.sort((a, b) => (a.date > b.date ? 1 : -1));
-        setEntries(parsedEntries);
+        // 今月の日記エントリーだけ抽出し日付を取り出す
+        const thisMonthDates = diaryEntries
+          .map(([key]) => key.replace("diary-", ""))
+          .filter((date) => date.startsWith(monthStr))
+          .sort();
 
-        // 最大連続記録計算
-        let maxStreakCount = 0;
+        const daysWritten = thisMonthDates.length;
+
+        // 最長連続ストリーク計算
+        let longestStreak = 0;
         let currentStreak = 0;
         let prevDate: dayjs.Dayjs | null = null;
 
-        parsedEntries.forEach(({ date }) => {
+        thisMonthDates.forEach((date) => {
           const currentDate = dayjs(date);
           if (prevDate) {
             if (currentDate.diff(prevDate, "day") === 1) {
               currentStreak++;
             } else {
-              if (currentStreak > maxStreakCount) maxStreakCount = currentStreak;
+              if (currentStreak > longestStreak) longestStreak = currentStreak;
               currentStreak = 1;
             }
           } else {
@@ -61,82 +51,55 @@ const DailyHistory = () => {
           prevDate = currentDate;
         });
 
-        if (currentStreak > maxStreakCount) maxStreakCount = currentStreak;
+        if (currentStreak > longestStreak) longestStreak = currentStreak;
 
-        setMaxStreak(maxStreakCount);
-      } catch (error) {
-        console.error("履歴の読み込みに失敗:", error);
+        setMonthlyStats({ month: monthStr, daysWritten, longestStreak });
+      } catch (e) {
+        console.warn("月別統計の読み込み失敗", e);
       }
     };
 
-    loadEntries();
+    calculateStats();
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>📅 日別履歴</Text>
-      {/* 最大連続記録日数を改行して表示 */}
-      <Text style={styles.streak}>
-        {"🔥 過去の最大連続記録日数:\n" + maxStreak + " 日"}
-      </Text>
-      {entries.length === 0 ? (
-        <Text style={styles.empty}>まだ日記がありません</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>月別統計</Text>
+      {monthlyStats ? (
+        <View style={styles.card}>
+          <Text style={styles.text}>{monthlyStats.month} の統計</Text>
+          <Text style={styles.text}>この月は {monthlyStats.daysWritten} 日書きました</Text>
+          <Text style={styles.text}>今月の最長ストリークは {monthlyStats.longestStreak} 日</Text>
+        </View>
       ) : (
-        entries.map((entry) => (
-          <View key={entry.date} style={styles.entry}>
-            <Text style={styles.date}>{entry.date}</Text>
-            {/* 改行を反映 */}
-            <Text style={styles.content}>
-              {entry.content.split("\n").map((line, i) => (
-                <Text key={i}>
-                  {line}
-                  {i < entry.content.split("\n").length - 1 && "\n"}
-                </Text>
-              ))}
-            </Text>
-          </View>
-        ))
+        <Text style={styles.text}>統計情報がありません</Text>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#f2f3f5", paddingTop: 40 },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 8,
-  },
-  streak: {
-    fontSize: 60,
-    fontWeight: "900",
-    marginBottom: 24,
-    color: "tomato",
+    marginVertical: 12,
     textAlign: "center",
-    lineHeight: 70, // 改行時の行間調整
   },
-  empty: {
+  card: {
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  text: {
     fontSize: 18,
-    color: "gray",
-  },
-  entry: {
-    marginBottom: 16,
-    backgroundColor: "#f5f5f5",
-    padding: 12,
-    borderRadius: 8,
-  },
-  date: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 6,
-  },
-  content: {
-    fontSize: 16,
+    marginVertical: 6,
   },
 });
 
-export default DailyHistory;
+export default HistoryMonthly;
