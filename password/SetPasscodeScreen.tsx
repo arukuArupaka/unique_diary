@@ -8,11 +8,14 @@ import {
   Text,
   TextInput,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Hetter from "@/app/hetter";
 
 const SetPasscodeScreen: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
 
   // step: 1 = 初回入力, 2 = 再確認
   const [step, setStep] = useState<1 | 2>(1);
@@ -47,71 +50,73 @@ const SetPasscodeScreen: React.FC = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#f8f8ff",
-          padding: 20,
-          justifyContent: "center",
-          marginBottom: 50,
-        }}
-      >
-        {/* タイトル */}
-        <Text
+      <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
+        <Hetter />
+        <View
           style={{
-            fontSize: 30,
-            textAlign: "center",
-            fontWeight: 600,
-            marginBottom: 20,
+            flex: 1,
+            backgroundColor: "",
+            padding: 20,
+            justifyContent: "center",
           }}
         >
-          {step === 1
-            ? "4桁のパスコードを\n入力してください"
-            : "もう一度パスコードを\n入力してください"}
-        </Text>
-
-        <Text
-          style={{
-            fontSize: 14,
-            textAlign: "center",
-            color: "gray",
-            marginBottom: 20,
-          }}
-        >
-          パスコードを忘れると復元ができません。{"\n"}大切に保管してください。
-        </Text>
-
-        {/* 入力フィールド */}
-        <TextInput
-          style={{
-            borderBottomWidth: 1,
-            fontSize: 24,
-            textAlign: "center",
-            marginBottom: 20,
-            paddingVertical: 6,
-          }}
-          keyboardType="number-pad"
-          secureTextEntry
-          maxLength={4}
-          value={step === 1 ? pin : confirmPin}
-          onChangeText={step === 1 ? setPin : setConfirmPin} //1回目と再確認を区別
-        />
-
-        {/* 次へ / 決定 ボタン */}
-        <TouchableOpacity
-          style={{
-            alignSelf: "center",
-            backgroundColor: "#1e90ff",
-            paddingHorizontal: 40,
-            paddingVertical: 10,
-            borderRadius: 8,
-          }}
-          onPress={step === 1 ? handleNext : handleConfirm}
-        >
-          <Text style={{ color: "#fff", fontSize: 25 }}>
-            {step === 1 ? "次へ" : "決定"}
+          {/* タイトル */}
+          <Text
+            style={{
+              fontSize: 30,
+              textAlign: "center",
+              fontWeight: 600,
+              marginBottom: 20,
+            }}
+          >
+            {step === 1
+              ? "4桁のパスコードを\n入力してください"
+              : "もう一度パスコードを\n入力してください"}
           </Text>
-        </TouchableOpacity>
+
+          <Text
+            style={{
+              fontSize: 14,
+              textAlign: "center",
+              color: "gray",
+              marginBottom: 20,
+            }}
+          >
+            パスコードを忘れると復元ができません。{"\n"}大切に保管してください。
+          </Text>
+
+          {/* 入力フィールド */}
+          <TextInput
+            style={{
+              borderBottomWidth: 1,
+              fontSize: 24,
+              textAlign: "center",
+              marginBottom: 20,
+              paddingVertical: 6,
+            }}
+            keyboardType="number-pad"
+            secureTextEntry
+            maxLength={4}
+            value={step === 1 ? pin : confirmPin}
+            onChangeText={step === 1 ? setPin : setConfirmPin} //1回目と再確認を区別
+          />
+
+          {/* 次へ / 決定 ボタン */}
+          <TouchableOpacity
+            style={{
+              alignSelf: "center",
+              backgroundColor: "#1e90ff",
+              paddingHorizontal: 40,
+              paddingVertical: 10,
+              borderRadius: 8,
+            }}
+            onPress={step === 1 ? handleNext : handleConfirm}
+          >
+            <Text style={{ color: "#fff", fontSize: 25 }}>
+              {step === 1 ? "次へ" : "決定"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );

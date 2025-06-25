@@ -1,13 +1,16 @@
 import Feather from "@expo/vector-icons/Feather";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const now = new Date();
 const month = now.getMonth() + 1;
 const day = now.getDate();
 const todayString = `${month}月${day}日`; // 今日の日付
 const Hetter = () => {
+  const pathname = usePathname(); // 今どこの画面にいるか見れる。
+  //console.log("現在のパス:", pathname);
   return (
     <View
       style={{
@@ -21,18 +24,29 @@ const Hetter = () => {
         borderColor: "#ccc",
       }}
     >
-      <Text
-        style={{
-          color: "black",
-          fontSize: 32,
-          marginLeft: 15,
-          shadowOpacity: 0.2,
-          shadowRadius: 4,
-          elevation: 3,
-        }}
-      >
-        {todayString} {/* 今日の日付を表示 */}
-      </Text>
+      {pathname === "/set-passcode" ? ( //戻るボタンが必要な時に戻るボタンに変化する。
+        <TouchableOpacity
+          style={{
+            marginLeft: 10,
+          }}
+          onPress={() => router.back()}
+        >
+          <FontAwesome6 name="backward" size={37} color="black" />
+        </TouchableOpacity>
+      ) : (
+        <Text
+          style={{
+            color: "black",
+            fontSize: 32,
+            marginLeft: 15,
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 3,
+          }}
+        >
+          {todayString} {/* 今日の日付を表示 */}
+        </Text>
+      )}
       {/* <Feather
         name="bell"
         size={31}
