@@ -133,6 +133,7 @@ const Second = () => {
               alignItems: "center",
               backgroundColor: "#ffffff",
               shadowColor: "black",
+              shadowOffset: { width: 0, height: 3 },
               shadowOpacity: 0.5,
               shadowRadius: 4,
               elevation: 3,

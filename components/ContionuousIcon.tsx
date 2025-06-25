@@ -7,20 +7,28 @@ import * as Haptics from "expo-haptics";
 import { useEffect } from "react";
 import Tesuto from "@/app/tesuto";
 import * as Animatable from "react-native-animatable";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ContionuousIcon = () => {
-  const RankColor = (streak: number): string => {
-    if (streak < 1) return "black";
-    if (streak < 3) return "#FFD700";
-    if (streak < 7) return "orange";
-    if (streak < 14) return "red";
-    if (streak < 30) return "purple";
-    return "#00FFFF";
+  const getGradientColors = (streak: number): [string, string] => {
+    if (streak < 1) return ["#666", "#333"]; // 黒
+    if (streak < 3) return ["#FFD700", "#FFA500"]; // 黄色
+    if (streak < 7) return ["orange", "#FF4500"]; // オレンジ
+    if (streak < 14) return ["red", "#b30000"]; // 赤
+    if (streak < 30) return ["purple", "#8A2BE2"]; // 紫
+    return ["#00FFFF", "#00BFFF"]; // 青
   };
   // useEffect(() => {
-  //   setStreak(51); // 一時的に数字をいじれる
+  //   setStreak(52); // 一時的に数字をいじれる
   // }, []);
   const { streak, setStreak } = useStreak(0);
+
+  const iconSize = streak < 30 ? 50 + streak * 2 : 110;
+
+  function RankColor(streak: number) {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <View
@@ -46,11 +54,27 @@ const ContionuousIcon = () => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
           }}
         >
-          <FontAwesome5
-            name="fire"
-            size={streak < 30 ? 50 + streak * 2 : 110}
-            color={RankColor(streak)}
-          />
+          <MaskedView
+            style={{ width: iconSize, height: iconSize }}
+            maskElement={
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <FontAwesome5 name="fire" size={iconSize} color="" />
+              </View>
+            }
+          >
+            <LinearGradient
+              colors={getGradientColors(streak)}
+              style={{ flex: 1 }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            />
+          </MaskedView>
         </TouchableOpacity>
       )}
 

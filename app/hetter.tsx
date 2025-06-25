@@ -28,8 +28,14 @@ const Hetter = () => {
         <TouchableOpacity
           style={{
             marginLeft: 10,
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 3,
           }}
-          onPress={() => router.back()}
+          onPress={() => {
+            router.back();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          }}
         >
           <FontAwesome6 name="backward" size={37} color="black" />
         </TouchableOpacity>
