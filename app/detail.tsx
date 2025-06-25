@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Hetter from "./hetter";
-import Hutter from "./hutter";
+import Header from "./header";
+import Footer from "./footer";
 import { useRouter, useFocusEffect } from "expo-router";
 import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
@@ -144,7 +144,7 @@ const Detail = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1, backgroundColor }}>
-        <Hetter />
+        <Header />
 
         <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
           {settingItems.map((item, index) => {
@@ -192,7 +192,7 @@ const Detail = () => {
           })}
         </View>
 
-        <Hutter />
+        <Footer />
       </View>
     </TouchableWithoutFeedback>
   );

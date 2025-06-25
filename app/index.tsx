@@ -11,8 +11,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Hetter from "./hetter";
-import Hutter from "./hutter";
+import Header from "./header";
+import Footer from "./footer";
 import Input from "@/components/Input";
 import { useSuggestion } from "../components/Suggestion_Section";
 import StreakDisplay from "../components/StreakDisplay";
@@ -57,7 +57,7 @@ const Index = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
-        <Hetter />
+        <Header />
 
         <View
           style={{
@@ -72,7 +72,7 @@ const Index = () => {
           <ContionuousIcon />
         </View>
 
-        <Hutter />
+        <Footer />
       </View>
     </TouchableWithoutFeedback>
   );

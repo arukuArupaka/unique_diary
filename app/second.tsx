@@ -17,8 +17,8 @@ import {
   View,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-import Hetter from "./hetter";
-import Hutter from "./hutter";
+import Header from "./header";
+import Footer from "./footer";
 import { Calendar } from "react-native-calendars";
 import CustomCalendar from "../components/Calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -78,7 +78,7 @@ const Second = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
-        <Hetter />
+        <Header />
         {/* メイン部分　*/}
         <View
           style={{
@@ -143,7 +143,7 @@ const Second = () => {
             <FontAwesome5 name="pencil-alt" size={40} color="black" />
           </TouchableOpacity>
         </View>
-        <Hutter />
+        <Footer />
       </View>
     </TouchableWithoutFeedback>
   );

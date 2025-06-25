@@ -1,7 +1,7 @@
 import Input from "@/components/Input";
 import { TouchableWithoutFeedback, View, Keyboard, Text } from "react-native";
-import Hetter from "./hetter";
-import Hutter from "./hutter";
+import Hetter from "./header";
+import Hutter from "./footer";
 import {} from "@/app/second"; // 選択した日付を取得するためのコンテキスト
 import { useSelectedDate } from "@/data/DateContext";
 import { useEffect, useState } from "react";

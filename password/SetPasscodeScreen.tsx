@@ -11,7 +11,7 @@ import {
 import { usePathname, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Hetter from "@/app/hetter";
+import Header from "@/app/header";
 
 const SetPasscodeScreen: React.FC = () => {
   const router = useRouter();
@@ -51,7 +51,7 @@ const SetPasscodeScreen: React.FC = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
-        <Hetter />
+        <Header />
         <View
           style={{
             flex: 1,

@@ -5,7 +5,7 @@ import StreakDisplay from "./StreakDisplay";
 
 import * as Haptics from "expo-haptics";
 import { useEffect, useRef } from "react";
-import Tesuto from "@/app/tesuto";
+import Rainbow from "@/app/rainbow";
 import * as Animatable from "react-native-animatable";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
@@ -81,7 +81,7 @@ const ContionuousIcon = () => {
     >
       {/*🔥連続記録 */}
       {streak > 50 ? (
-        <Tesuto />
+        <Rainbow />
       ) : (
         <TouchableOpacity
           style={{

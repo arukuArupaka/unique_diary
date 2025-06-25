@@ -30,7 +30,7 @@ const HOLO_COLORS = [
   "rgba(255, 0, 0, 0.5)", // レッド
 ] as const;
 
-export default function Tesuto() {
+export default function Rainbow() {
   const animatedSensor = useAnimatedSensor(SensorType.GYROSCOPE, {
     interval: 16,
   });
