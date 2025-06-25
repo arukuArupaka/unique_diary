@@ -79,6 +79,7 @@ const Detail = () => {
     //   onPress: () => setThemeModalVisible(true),
     // },
     {
+      // <Feather name="unlock" size={24} color="black" /> これ使う
       label: i18n.t("passcode"),
       iconLib: Feather,
       iconName: "lock",

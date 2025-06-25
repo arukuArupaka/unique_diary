@@ -2,7 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { router, usePathname } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
-import { FontAwesome6 } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const now = new Date();
 const month = now.getMonth() + 1;
@@ -27,17 +27,14 @@ const Hetter = () => {
       {pathname === "/set-passcode" ? ( //戻るボタンが必要な時に戻るボタンに変化する。
         <TouchableOpacity
           style={{
-            marginLeft: 10,
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 3,
+            marginLeft: 3,
           }}
           onPress={() => {
             router.back();
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           }}
         >
-          <FontAwesome6 name="backward" size={37} color="black" />
+          <Ionicons name="chevron-back" size={35} color="black" />
         </TouchableOpacity>
       ) : (
         <Text

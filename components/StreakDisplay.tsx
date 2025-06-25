@@ -79,7 +79,7 @@ const StreakDisplay = forwardRef((props, ref) => {
       const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
       if (animatedDate === today) {
         startStreakAnimation();
-          await AsyncStorage.setItem("streakAnimationDate", today);
+        await AsyncStorage.setItem("streakAnimationDate", today);
       }
 
       const storedLogDates = await AsyncStorage.getItem("logDates");

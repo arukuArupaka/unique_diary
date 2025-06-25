@@ -109,6 +109,10 @@ const SetPasscodeScreen: React.FC = () => {
               paddingHorizontal: 40,
               paddingVertical: 10,
               borderRadius: 8,
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 3,
             }}
             onPress={step === 1 ? handleNext : handleConfirm}
           >
