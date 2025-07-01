@@ -56,7 +56,7 @@ const SetPasscodeScreen: React.FC = () => {
           style={{
             flex: 1,
             backgroundColor: "",
-            paddingTop: 70,
+            paddingTop: 90,
             paddingHorizontal: 20,
             justifyContent: "flex-start",
           }}
