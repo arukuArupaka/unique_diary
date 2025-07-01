@@ -1,11 +1,18 @@
 import Input from "@/components/Input";
-import { TouchableWithoutFeedback, View, Keyboard, Text } from "react-native";
+import {
+  TouchableWithoutFeedback,
+  View,
+  Keyboard,
+  Text,
+  Image,
+} from "react-native";
 import Hetter from "./header";
 import Hutter from "./footer";
 import {} from "@/app/second"; // 選択した日付を取得するためのコンテキスト
 import { useSelectedDate } from "@/data/DateContext";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
 
 const inputPase = () => {
   const { selectedDate } = useSelectedDate();
@@ -70,11 +77,41 @@ const inputPase = () => {
               paddingTop: "5%",
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-              {yestselectedDatte(selectedDate)} の日記:
-            </Text>
-            <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
+            <View
+              style={{
+                width: "100%",
+                height: "90%",
+                backgroundColor: "#fff",
+                borderWidth: 1,
+                borderColor: "#ccc",
+                borderRadius: 8,
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            >
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                {yestselectedDatte(selectedDate)} の日記だよ
+              </Text>
+              <ScrollView style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 18 }}>{diaryText}</Text>
+              </ScrollView>
+            </View>
           </View>
+          <Image
+            source={require("../assets/images/StepiReviewToYesterday.png")}
+            style={{
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: 90, // お好みで調整
+              height: 90, // お好みで調整
+              resizeMode: "contain",
+              marginLeft: 5,
+              marginBottom: 5, // 画像のサイズを調整
+            }}
+          />
         </View>
         {/* フッター部分 */}
         <Hutter />

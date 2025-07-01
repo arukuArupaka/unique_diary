@@ -9,7 +9,7 @@ const now = new Date();
 const month = now.getMonth() + 1;
 const day = now.getDate();
 const todayString = `${month}月${day}日`; // 今日の日付
-const Hutter = () => {
+const Footer = () => {
   const pathname = usePathname(); //今どこの画面にいるか見れる。
   const activeColor = "#4db5ff"; //水色っぽいつ
   const inactiveColor = "#808080"; //グレー
@@ -136,4 +136,4 @@ const Hutter = () => {
     </View>
   );
 };
-export default Hutter;
+export default Footer;

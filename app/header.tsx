@@ -8,7 +8,7 @@ const now = new Date();
 const month = now.getMonth() + 1;
 const day = now.getDate();
 const todayString = `${month}月${day}日`; // 今日の日付
-const Hetter = () => {
+const Header = () => {
   const pathname = usePathname(); // 今どこの画面にいるか見れる。
   //console.log("現在のパス:", pathname);
   return (
@@ -112,4 +112,4 @@ const Hetter = () => {
   );
 };
 
-export default Hetter;
+export default Header;

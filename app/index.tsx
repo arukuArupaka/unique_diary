@@ -19,40 +19,12 @@ import StreakDisplay from "../components/StreakDisplay";
 import ContionuousIcon from "@/components/ContionuousIcon";
 
 const Index = () => {
-  const now = new Date();
-  const navigation = useNavigation();
-  const router = useRouter();
   const [diaryText, setDiaryText] = useState("");
 
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
     useSuggestion();
 
   const [suggestionwhole, setsuggestionwhole] = useState(false);
-
-  const handlePress = () => {
-    setsuggestionwhole((prev) => !prev);
-  };
-
-  const handleSave = async () => {
-    if (diaryText.trim() === "") {
-      Alert.alert("エラー", "日記の内容を入力してください");
-      return;
-    }
-
-    try {
-      const today = new Date();
-      const key = `diary-${today.getFullYear()}-${
-        today.getMonth() + 1
-      }-${today.getDate()}`;
-      await AsyncStorage.setItem(key, diaryText);
-
-      Alert.alert("保存完了", "日記が保存されました");
-      setDiaryText("");
-    } catch (error) {
-      Alert.alert("保存失敗", "データの保存中にエラーが発生しました");
-      console.error(error);
-    }
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

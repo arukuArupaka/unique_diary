@@ -11,7 +11,8 @@ import { useSelectedDate } from "@/data/DateContext";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
-  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } = useSuggestion();
+  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
+    useSuggestion();
   const { selectedDate } = useSelectedDate();
   const pathname = usePathname();
   const [suggestionwhole, setsuggestionwhole] = useState(false);
@@ -77,7 +78,10 @@ const Input = () => {
       const historyRaw = await AsyncStorage.getItem("diary-time-history");
       const history = historyRaw ? JSON.parse(historyRaw) : [];
       const updatedHistory = [...history, { hour, minute }].slice(-30);
-      await AsyncStorage.setItem("diary-time-history", JSON.stringify(updatedHistory));
+      await AsyncStorage.setItem(
+        "diary-time-history",
+        JSON.stringify(updatedHistory)
+      );
     };
 
     const dateToSave =
@@ -113,9 +117,6 @@ const Input = () => {
 
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>
-        {pathname === "/InputPase" ? `${selectedDate}の日記` : "今日の日記"}
-      </Text>
       <TextInput
         style={{
           borderWidth: 1,
@@ -135,9 +136,10 @@ const Input = () => {
         placeholder={
           pathname === "/InputPase"
             ? `${selectedDate}の日記を書いてね`
-            : "今日はどんな一日だった？"
+            : "今日はどんな日だった？"
         }
         multiline
+        scrollEnabled={true}
         value={diaryText}
         onChangeText={setDiaryText}
       />

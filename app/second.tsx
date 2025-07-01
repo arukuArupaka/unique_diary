@@ -23,6 +23,7 @@ import { Calendar } from "react-native-calendars";
 import CustomCalendar from "../components/Calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Second = () => {
   const formatDateKey = (dateString: string) => {
@@ -115,7 +116,9 @@ const Second = () => {
                 日付を選んでください
               </Text>
             )}
-            <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
+            <ScrollView>
+              <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
+            </ScrollView>
           </View>
           {/* 日記入力画面への移動 */}
           <TouchableOpacity
