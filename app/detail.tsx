@@ -143,7 +143,7 @@ const Detail = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={{ flex: 1, backgroundColor }}>
+      <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
         <Header />
 
         <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
