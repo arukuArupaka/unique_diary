@@ -82,16 +82,22 @@ const inputPase = () => {
                 width: "100%",
                 height: "90%",
                 backgroundColor: "#fff",
-                borderWidth: 1,
+                borderWidth: 0,
                 borderColor: "#ccc",
-                borderRadius: 8,
-                shadowOffset: { width: 0, height: 3 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 3,
+                borderRadius: 30,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.2,
+                shadowRadius: 20,
+                elevation: 20,
+                padding: 25,
               }}
             >
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                }}
+              >
                 {yestselectedDatte(selectedDate)} の日記だよ
               </Text>
               <ScrollView style={{ marginTop: 10 }}>
@@ -105,11 +111,11 @@ const inputPase = () => {
               position: "absolute",
               left: 0,
               bottom: 0,
-              width: 90, // お好みで調整
-              height: 90, // お好みで調整
+              width: 90,
+              height: 90,
               resizeMode: "contain",
               marginLeft: 5,
-              marginBottom: 5, // 画像のサイズを調整
+              marginBottom: 5,
             }}
           />
         </View>

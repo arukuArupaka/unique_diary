@@ -15,10 +15,12 @@ export default function CustomCalendar({
   return (
     <View
       style={{
-        marginTop: 0,
+        width: "90%",
+        height: "50%",
+        alignSelf: "center",
+        marginTop: 10,
         backgroundColor: "#fff",
         borderRadius: 12,
-        padding: 16,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.1,

@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { TouchableOpacity, View, Text } from "react-native";
 import * as Haptics from "expo-haptics";
 import { usePathname } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 const now = new Date();
 const month = now.getMonth() + 1;
@@ -18,14 +19,17 @@ const Footer = () => {
     /* フッター部分 */
   }
   return (
-    <View
+    <LinearGradient
+      colors={["#d2ecff", "#f0f8ff"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{
         width: "100%",
         height: "10%",
         backgroundColor: "#f0f8ff",
         paddingTop: "1.5%",
         justifyContent: "center",
-        borderTopWidth: 1,
+        borderTopWidth: 0,
         borderColor: "#ccc",
         flexDirection: "row",
         gap: "20%",
@@ -133,7 +137,7 @@ const Footer = () => {
         />
         {/* その画面にいるときは#4db5ffこの色にしたい*/}
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 };
 export default Footer;
