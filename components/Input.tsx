@@ -126,7 +126,7 @@ const Input = () => {
           borderColor: "#ccc",
           borderRadius: 8,
           padding: 12,
-          height: "55%",
+          height: "50%",
           textAlignVertical: "top",
           backgroundColor: "#fff",
           marginBottom: 0,
