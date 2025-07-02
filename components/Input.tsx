@@ -11,6 +11,7 @@ import { useSelectedDate } from "@/data/DateContext";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Entypo from "@expo/vector-icons/Entypo";
+import { whatDayList } from "@/data/whatDayList";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
@@ -21,6 +22,12 @@ const Input = () => {
   const pathname = usePathname();
   const [suggestionwhole, setsuggestionwhole] = useState(false);
 
+  const getTodayKey = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 9);
+    return now.toISOString().slice(5, 10); // "MM-DD"　  /** JST の MM-DD 文字列を返す */
+  };
+  const todaySpecial = whatDayList[getTodayKey()] ?? null; //nullは念のため
   const getTodayString = (): string => {
     const now = new Date();
     now.setHours(now.getHours() + 9);
@@ -30,7 +37,6 @@ const Input = () => {
   const isValidDateString = (dateStr: string) => {
     return /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
   };
-
   const updateStreak = async (dateStr: string) => {
     try {
       const today = getTodayString();
@@ -157,10 +163,6 @@ const Input = () => {
         : isTodayDiaryFilled();
     }, [])
   );
-  const handlePress = () => {
-    setsuggestionwhole((prev) => !prev);
-  };
-
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
       <View
@@ -199,7 +201,6 @@ const Input = () => {
           }}
           style={{
             position: "absolute",
-            backgroundColor: "",
             right: 6,
             bottom: 2,
             width: 30,
@@ -230,6 +231,7 @@ const Input = () => {
           </MaskedView>
         </TouchableOpacity>
       </View>
+
       <View style={{ flexDirection: "row", width: "100%", height: "44%" }}>
         <View
           style={{
@@ -252,15 +254,14 @@ const Input = () => {
                 marginTop: "1%",
                 marginLeft: "2%",
                 gap: "4%",
-                backgroundColor: "",
-                position: "relative", //1. 親要素を基準にする
+                position: "relative",
                 paddingTop: 10,
               }}
             >
               <TouchableOpacity
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  handlePress();
+                  setsuggestionwhole(false);
                 }}
                 style={{
                   width: 20,
@@ -296,14 +297,17 @@ const Input = () => {
                   />
                 </MaskedView>
               </TouchableOpacity>
+
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>日々</Text>
               <Text style={{ fontSize: 17, color: "#777" }}>
                 {DailySuggestion}
               </Text>
+
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>大学生活</Text>
               <Text style={{ fontSize: 17, color: "#777" }}>
                 {CollegeSuggestion}
               </Text>
+
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>人生</Text>
               <Text style={{ fontSize: 17, color: "#777" }}>
                 {LifeSuggestion}
@@ -311,28 +315,38 @@ const Input = () => {
             </View>
           ) : (
             <TouchableOpacity
-              onPress={handlePress}
+              onPress={() => setsuggestionwhole(true)}
               style={{
                 width: "82%",
                 paddingLeft: "10%",
                 marginLeft: "2%",
-                backgroundColor: "",
               }}
             >
-              <Text style={{ fontSize: 16, color: "#555" }}>
-                {content}
-                {"\n"}
-                <View
+              {/* テキスト立て並べに取り敢えずしています*/}
+              <View>
+                <Text style={{ fontSize: 16, color: "#555" }}>{content}</Text>
+                {todaySpecial && (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: "black",
+                      marginTop: 6,
+                    }}
+                  >
+                    {`今日は「${todaySpecial}」です`}
+                  </Text> //nullにはならないけど念のため
+                )}
+                　{" "}
+                <Text
                   style={{
-                    backgroundColor: "",
-                    paddingTop: 70,
+                    fontSize: 15,
+                    color: "red",
+                    marginTop: 8,
                   }}
                 >
-                  <Text style={{ fontSize: 15, color: "red" }}>
-                    タップしてヒントを表示💡
-                  </Text>
-                </View>
-              </Text>
+                  タップしてヒントを表示💡
+                </Text>
+              </View>
             </TouchableOpacity>
           )}
           <View
@@ -349,7 +363,7 @@ const Input = () => {
               <TouchableOpacity
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  handlePress();
+                  setsuggestionwhole(true);
                 }}
                 style={{
                   width: 56,
