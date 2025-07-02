@@ -75,11 +75,11 @@ const loadStreakAndWeekdays = async () => {
     const streakNum = storedStreak ? parseInt(storedStreak, 10) : 0;
     setStreak(streakNum);
 
-    const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
-    if (animatedDate === today) {
-      // その日記録があれば、毎回アニメーション起動
-      startStreakAnimation();
-    }
+      const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
+      if (animatedDate === today) {
+        startStreakAnimation();
+          await AsyncStorage.setItem("streakAnimationDate", today);
+      }
 
     const storedLogDates = await AsyncStorage.getItem("logDates");
     if (!storedLogDates) return;

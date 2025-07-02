@@ -17,12 +17,13 @@ import {
   View,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-import Hetter from "./hetter";
-import Hutter from "./hutter";
+import Header from "./header";
+import Footer from "./footer";
 import { Calendar } from "react-native-calendars";
 import CustomCalendar from "../components/Calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Second = () => {
   const formatDateKey = (dateString: string) => {
@@ -78,7 +79,7 @@ const Second = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
-        <Hetter />
+        <Header />
         {/* メイン部分　*/}
         <View
           style={{
@@ -115,7 +116,9 @@ const Second = () => {
                 日付を選んでください
               </Text>
             )}
-            <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
+            <ScrollView>
+              <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
+            </ScrollView>
           </View>
           {/* 日記入力画面への移動 */}
           <TouchableOpacity
@@ -133,6 +136,7 @@ const Second = () => {
               alignItems: "center",
               backgroundColor: "#ffffff",
               shadowColor: "black",
+              shadowOffset: { width: 0, height: 3 },
               shadowOpacity: 0.5,
               shadowRadius: 4,
               elevation: 3,
@@ -142,7 +146,7 @@ const Second = () => {
             <FontAwesome5 name="pencil-alt" size={40} color="black" />
           </TouchableOpacity>
         </View>
-        <Hutter />
+        <Footer />
       </View>
     </TouchableWithoutFeedback>
   );

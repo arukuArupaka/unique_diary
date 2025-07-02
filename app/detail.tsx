@@ -10,27 +10,16 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Hetter from "./hetter";
-import Hutter from "./hutter";
+import Header from "./header";
+import Footer from "./footer";
 import { useRouter, useFocusEffect } from "expo-router";
 import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
-import i18n from "../utils/i18n";
 import * as SecureStore from "expo-secure-store";
 
 const Detail = () => {
   const router = useRouter();
 
-  // 言語選択モーダルの表示状態
-  const [languageModalVisible, setLanguageModalVisible] = useState(false);
-  // 現在選択中の言語
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    (i18n as any).locale
-  );
-  // テーマ（light / dark）
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  // テーマ選択モーダルの表示状態
-  const [themeModalVisible, setThemeModalVisible] = useState(false);
   // パスコード機能の有効無効
   const [passcodeEnabled, setPasscodeEnabled] = useState(false);
 
@@ -57,42 +46,29 @@ const Detail = () => {
       await SecureStore.deleteItemAsync("passcode");
       await SecureStore.deleteItemAsync("passcode_enabled");
       setPasscodeEnabled(false);
-      Alert.alert(i18n.t("done"), i18n.t("passcodeDisabledMessage"));
+      Alert.alert("完了", "パスコード機能を無効にしました");
     } catch (e) {
       console.warn("パスコード無効化失敗", e);
     }
   };
 
-  // 言語を切り替える処理
-  const changeLanguage = (lang: "ja" | "en") => {
-    (i18n as any).locale = lang;
-    setSelectedLanguage(lang);
-    setLanguageModalVisible(false);
-  };
-
   // 設定項目リスト
   const settingItems = [
-    // {
-    //   label: i18n.t("theme"),
-    //   iconLib: MaterialCommunityIcons,
-    //   iconName: "theme-light-dark",
-    //   onPress: () => setThemeModalVisible(true),
-    // },
     {
-      label: i18n.t("passcode"),
+      label: "パスコード",
       iconLib: Feather,
-      iconName: "lock",
+      iconName: passcodeEnabled ? "lock" : "unlock", //ちょっとこだわり
       onPress: () => {
         if (!passcodeEnabled) {
           router.push("/set-passcode");
         } else {
           Alert.alert(
-            i18n.t("warning"),
-            i18n.t("passcodeDisableConfirmMessage"),
+            "警告",
+            "現在記憶しているパスコードを一度削除してよろしいですか？",
             [
-              { text: i18n.t("cancel"), style: "cancel" },
+              { text: "キャンセル", style: "cancel" },
               {
-                text: i18n.t("disable"),
+                text: "無効にする",
                 style: "destructive",
                 onPress: disablePasscode,
               },
@@ -103,47 +79,20 @@ const Detail = () => {
       },
     },
     {
-      label: i18n.t("reminder"),
+      label: "リマインダー",
       iconLib: Feather,
       iconName: "bell",
       onPress: () => {
         scheduleDailyNotification();
-        Alert.alert(
-          i18n.t("setNotificationTitle"),
-          i18n.t("setNotificationMessage")
-        );
+        Alert.alert("通知を設定しました", "毎日20時にリマインドされます!");
       },
     },
-    // {
-    //   label: i18n.t("language"),
-    //   iconLib: Feather,
-    //   iconName: "settings",
-    //   onPress: () => setLanguageModalVisible(true),
-    // },
-    // {
-    //   label: i18n.t("dailyHistory"),
-    //   iconLib: Feather,
-    //   iconName: "calendar",
-    //   onPress: () => router.push("/history/daily"),
-    // },
-    // {
-    //   label: i18n.t("monthlyStats"),
-    //   iconLib: Feather,
-    //   iconName: "chart-bar",
-    //   onPress: () => router.push("/history/monthly"),
-    // },
   ];
-
-  // テーマによる色の切り替え
-  const backgroundColor = theme === "light" ? "#f2f3f5" : "#121212";
-  const cardColor = theme === "light" ? "#fff" : "#1e1e1e";
-  const textColor = theme === "light" ? "#333" : "#f5f5f5";
-  const iconColor = theme === "light" ? "#555" : "#ccc";
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={{ flex: 1, backgroundColor }}>
-        <Hetter />
+      <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
+        <Header />
 
         <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
           {settingItems.map((item, index) => {
@@ -152,7 +101,7 @@ const Detail = () => {
               <TouchableOpacity
                 key={index}
                 style={{
-                  backgroundColor: cardColor,
+                  backgroundColor: "#fff",
                   borderRadius: 16,
                   paddingVertical: 22,
                   paddingHorizontal: 18,
@@ -169,16 +118,12 @@ const Detail = () => {
                 onPress={item.onPress}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Icon
-                    name={item.iconName as any}
-                    size={24}
-                    color={iconColor}
-                  />
+                  <Icon name={item.iconName as any} size={24} color="#555" />
                   <Text
                     style={{
                       fontSize: 16,
                       marginLeft: 16,
-                      color: textColor,
+                      color: "#333",
                       fontWeight: "500",
                     }}
                   >
@@ -190,8 +135,7 @@ const Detail = () => {
             );
           })}
         </View>
-
-        <Hutter />
+        <Footer />
       </View>
     </TouchableWithoutFeedback>
   );

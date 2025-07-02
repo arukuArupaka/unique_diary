@@ -6,6 +6,7 @@ import { View, ActivityIndicator } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import AuthPasscodeScreen from "../password/AuthPasscodeScreen";
 import { CardStyleInterpolators } from "@react-navigation/stack";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   const [isChecking, setIsChecking] = useState(true);
@@ -40,15 +41,17 @@ export default function RootLayout() {
   }
 
   return (
-    <SelectedDateProvider>
-      <StreakProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "none", //画面移動のアニメーションなし
-          }}
-        />
-      </StreakProvider>
-    </SelectedDateProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SelectedDateProvider>
+        <StreakProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: "none",
+            }}
+          />
+        </StreakProvider>
+      </SelectedDateProvider>
+    </GestureHandlerRootView>
   );
 }

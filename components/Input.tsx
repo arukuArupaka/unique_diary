@@ -8,10 +8,14 @@ import { useSuggestion } from "../components/Suggestion_Section";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePathname } from "expo-router";
 import { useSelectedDate } from "@/data/DateContext";
+import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
-  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } = useSuggestion();
+  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
+    useSuggestion();
   const { selectedDate } = useSelectedDate();
   const pathname = usePathname();
   const [suggestionwhole, setsuggestionwhole] = useState(false);
@@ -77,7 +81,10 @@ const Input = () => {
       const historyRaw = await AsyncStorage.getItem("diary-time-history");
       const history = historyRaw ? JSON.parse(historyRaw) : [];
       const updatedHistory = [...history, { hour, minute }].slice(-30);
-      await AsyncStorage.setItem("diary-time-history", JSON.stringify(updatedHistory));
+      await AsyncStorage.setItem(
+        "diary-time-history",
+        JSON.stringify(updatedHistory)
+      );
     };
 
     const dateToSave =
@@ -113,16 +120,13 @@ const Input = () => {
 
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>
-        {pathname === "/InputPase" ? `${selectedDate}の日記` : "今日の日記"}
-      </Text>
       <TextInput
         style={{
-          borderWidth: 1,
+          borderWidth: 0,
           borderColor: "#ccc",
           borderRadius: 8,
           padding: 12,
-          height: 150,
+          height: "50%",
           textAlignVertical: "top",
           backgroundColor: "#fff",
           marginBottom: 0,
@@ -135,112 +139,208 @@ const Input = () => {
         placeholder={
           pathname === "/InputPase"
             ? `${selectedDate}の日記を書いてね`
-            : "今日はどんな一日だった？"
+            : "今日はどんな日だった？"
         }
         multiline
+        scrollEnabled={true}
         value={diaryText}
         onChangeText={setDiaryText}
       />
 
-      <View style={{ flexDirection: "row", width: "100%", height: "50%" }}>
-        <View style={{ width: "88%", height: "100%" }}>
-          {suggestionwhole && (
-            <View
-              style={{
-                width: "100%",
-                height: "90%",
-                backgroundColor: "#ffffff",
-                borderRadius: 8,
-                marginTop: "6%",
-                gap: 6,
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 3,
-                paddingHorizontal: "4%",
-                paddingVertical: "2.5%",
-              }}
-            >
-              <Text style={{ fontSize: 15, color: "red" }}>日々</Text>
-              <Text style={{ fontSize: 18 }}>{DailySuggestion}</Text>
-
-              <Text style={{ fontSize: 15, color: "red" }}>大学生活</Text>
-              <Text style={{ fontSize: 18 }}>{CollegeSuggestion}</Text>
-
-              <Text style={{ fontSize: 15, color: "red" }}>人生</Text>
-              <Text style={{ fontSize: 18 }}>{LifeSuggestion}</Text>
-            </View>
-          )}
-        </View>
-
+      <View style={{ flexDirection: "row", width: "100%", height: "44%" }}>
         <View
           style={{
-            width: "20%",
-            height: "90%",
-            gap: "4%",
-            marginTop: "4%",
+            flexDirection: "row",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#fff",
+            borderRadius: 8,
+            marginTop: "6%",
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 3,
           }}
         >
-          <TouchableOpacity
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              handleSave();
-            }}
+          {suggestionwhole ? (
+            <TouchableOpacity
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                handlePress();
+              }}
+              style={{
+                width: "82%",
+                marginTop: "2%",
+                marginLeft: "2%",
+                gap: "4%",
+                backgroundColor: "",
+              }}
+            >
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>日々</Text>
+              <Text style={{ fontSize: 17, color: "#777" }}>
+                {DailySuggestion}
+              </Text>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>大学生活</Text>
+              <Text style={{ fontSize: 17, color: "#777" }}>
+                {CollegeSuggestion}
+              </Text>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>人生</Text>
+              <Text style={{ fontSize: 17, color: "#777" }}>
+                {LifeSuggestion}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handlePress}
+              style={{
+                width: "82%",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingLeft: "10%",
+                marginLeft: "2%",
+                backgroundColor: "",
+              }}
+            >
+              <Text style={{ fontSize: 16, color: "#555" }}>
+                タップしてヒントを見る💡
+              </Text>
+            </TouchableOpacity>
+          )}
+          <View
             style={{
-              width: "100%",
-              height: "32%",
-              borderRadius: 100,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingTop: "12%",
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-              elevation: 3,
-              paddingRight: 9,
+              marginTop: "1%",
+              marginLeft: "-2%",
+              gap: "4%",
+              width: "15%",
+              height: "65%",
+              borderRadius: 30,
             }}
           >
-            <Feather name="save" size={47} color="#4db5ff" />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                handleSave();
+              }}
+              style={{
+                width: 70,
+                height: 55,
+                borderRadius: 100,
+                justifyContent: "center",
+                paddingTop: "12%",
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+                elevation: 3,
+                paddingRight: 8,
+              }}
+            >
+              <MaskedView
+                style={{ width: "100%", height: "100%" }}
+                maskElement={
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Feather name="save" size={47} color="#fff" />
+                  </View>
+                }
+              >
+                <LinearGradient
+                  colors={["#58baff", "#d2ecff"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 2, y: 1 }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </MaskedView>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              handleSwap();
-            }}
-            style={{
-              width: "100%",
-              height: "32%",
-              borderRadius: 100,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-              elevation: 3,
-              paddingRight: 5,
-            }}
-          >
-            <MaterialCommunityIcons name="reload" size={54} color="red" />
-          </TouchableOpacity>
+            {suggestionwhole && (
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handleSwap();
+                }}
+                style={{
+                  width: 70,
+                  height: 55,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  shadowOpacity: 0.2,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  paddingRight: 8,
+                }}
+              >
+                <MaskedView
+                  style={{ width: "100%", height: "100%" }}
+                  maskElement={
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="reload"
+                        size={54}
+                        color="#fff"
+                      />
+                    </View>
+                  }
+                >
+                  <LinearGradient
+                    colors={["#58baff", "#d2ecff"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 2, y: 1 }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </MaskedView>
+              </TouchableOpacity>
+            )}
 
-          <TouchableOpacity
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              handlePress();
-            }}
-            style={{
-              width: "80%",
-              height: "32%",
-              borderRadius: 100,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowOpacity: 0.3,
-              shadowRadius: 4,
-              elevation: 3,
-              paddingLeft: 7,
-            }}
-          >
-            <AntDesign name="questioncircleo" size={48} color="black" />
-          </TouchableOpacity>
+            {/* {suggestionwhole && (
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handlePress();
+                }}
+                style={{
+                  backgroundColor: "",
+                  width: 78,
+                  height: 55,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                  elevation: 3,
+                }}
+              >
+                <MaskedView
+                  style={{ width: "100%", height: "100%" }}
+                  maskElement={
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <AntDesign name="close" size={57} color="#fff" />
+                    </View>
+                  }
+                >
+                  <LinearGradient
+                    colors={["#ff6a6a", "#ff4747"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 2, y: 1 }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </MaskedView>
+              </TouchableOpacity>
+            )} */}
+          </View>
         </View>
       </View>
     </View>
