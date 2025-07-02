@@ -67,29 +67,27 @@ const StreakDisplay = forwardRef((props, ref) => {
     now.setHours(now.getHours() + 9); // JST補正
     return now.toISOString().split("T")[0];
   };
+const loadStreakAndWeekdays = async () => {
+  try {
+    const today = getTodayWithJST();
 
-  const loadStreakAndWeekdays = async () => {
-    try {
-      const today = getTodayWithJST();
+    const storedStreak = await AsyncStorage.getItem("streakCount");
+    const streakNum = storedStreak ? parseInt(storedStreak, 10) : 0;
+    setStreak(streakNum);
 
-      const storedStreak = await AsyncStorage.getItem("streakCount");
-      const streakNum = storedStreak ? parseInt(storedStreak, 10) : 0;
-      setStreak(streakNum);
+    const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
+    if (animatedDate === today) {
+      // その日記録があれば、毎回アニメーション起動
+      startStreakAnimation();
+    }
 
-      const animatedDate = await AsyncStorage.getItem("streakAnimationDate");
-      if (animatedDate === today) {
-        startStreakAnimation();
-          await AsyncStorage.setItem("streakAnimationDate", today);
-      }
+    const storedLogDates = await AsyncStorage.getItem("logDates");
+    if (!storedLogDates) return;
 
-      const storedLogDates = await AsyncStorage.getItem("logDates");
-      if (!storedLogDates) return;
-
-      const dateArray: string[] = JSON.parse(storedLogDates);
-      const validDates = dateArray
-        .filter(isValidDateString)
-        .filter((d) => d <= today);
-
+    const dateArray: string[] = JSON.parse(storedLogDates);
+    const validDates = dateArray
+      .filter(isValidDateString)
+      .filter((d) => d <= today);
       const now = new Date();
       now.setHours(now.getHours() + 9);
       const startOfWeek = new Date(now);
