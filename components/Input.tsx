@@ -1,12 +1,12 @@
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import * as Haptics from "expo-haptics";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useSuggestion } from "../components/Suggestion_Section";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { usePathname } from "expo-router";
+import { useFocusEffect, usePathname } from "expo-router";
 import { useSelectedDate } from "@/data/DateContext";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
@@ -14,6 +14,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
+  const [content, setContent] = useState("");
   const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
     useSuggestion();
   const { selectedDate } = useSelectedDate();
@@ -113,40 +114,122 @@ const Input = () => {
       console.error(error);
     }
   };
+  useFocusEffect(
+    useCallback(() => {
+      const isTodayDiaryFilled = async () => {
+        try {
+          const today = new Date();
+          const key = `diary-${today.getFullYear()}-${
+            today.getMonth() + 1
+          }-${today.getDate()}`;
+          const text = await AsyncStorage.getItem(key);
+          setContent(
+            !text || text.trim() === ""
+              ? "今日のこと、少し言葉にしてみない？"
+              : "お疲れ様明日も頑張ろう！"
+          );
+        } catch (error) {
+          setContent("読み込みエラー");
+          console.error("日記読み込み失敗:", error);
+        }
+      };
 
+      const isDiaryFilled = async () => {
+        try {
+          const date = new Date(selectedDate);
+          const key = `diary-${date.getFullYear()}-${
+            date.getMonth() + 1
+          }-${date.getDate()}`;
+          const text = await AsyncStorage.getItem(key);
+          setContent(
+            !text || text.trim() === ""
+              ? "ちょっと思い出してみようか。"
+              : "お疲れ様明日も頑張ろう！"
+          );
+        } catch (error) {
+          setContent("読み込みエラー");
+          console.error("日記読み込み失敗:", error);
+        }
+      };
+
+      pathname === "/InputPase" && isValidDateString(selectedDate)
+        ? isDiaryFilled()
+        : isTodayDiaryFilled();
+    }, [])
+  );
   const handlePress = () => {
     setsuggestionwhole((prev) => !prev);
   };
 
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
-      <TextInput
+      <View
         style={{
-          borderWidth: 0,
-          borderColor: "#ccc",
-          borderRadius: 8,
-          padding: 12,
           height: "50%",
-          textAlignVertical: "top",
           backgroundColor: "#fff",
-          marginBottom: 0,
-          fontSize: 20,
+          borderRadius: 8,
           shadowOffset: { width: 0, height: 3 },
           shadowOpacity: 0.3,
           shadowRadius: 4,
           elevation: 3,
         }}
-        placeholder={
-          pathname === "/InputPase"
-            ? `${selectedDate}の日記を書いてね`
-            : "今日はどんな日だった？"
-        }
-        multiline
-        scrollEnabled={true}
-        value={diaryText}
-        onChangeText={setDiaryText}
-      />
-
+      >
+        <TextInput
+          style={{
+            height: "100%",
+            padding: 12,
+            paddingRight: 30,
+            textAlignVertical: "top",
+            fontSize: 20,
+          }}
+          placeholder={
+            pathname === "/InputPase"
+              ? `${selectedDate}の日記を書いてね`
+              : "今日はどんな日だった？"
+          }
+          multiline
+          scrollEnabled={true}
+          value={diaryText}
+          onChangeText={setDiaryText}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            handleSave();
+          }}
+          style={{
+            position: "absolute",
+            backgroundColor: "",
+            right: 6,
+            bottom: 2,
+            width: 30,
+            height: 50,
+            borderRadius: 25,
+          }}
+        >
+          <MaskedView
+            style={{ width: "100%", height: "100%" }}
+            maskElement={
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <MaterialCommunityIcons name="send" size={35} color="black" />
+              </View>
+            }
+          >
+            <LinearGradient
+              colors={["#58baff", "#d2ecff"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 2, y: 1 }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </MaskedView>
+        </TouchableOpacity>
+      </View>
       <View style={{ flexDirection: "row", width: "100%", height: "44%" }}>
         <View
           style={{
@@ -163,19 +246,56 @@ const Input = () => {
           }}
         >
           {suggestionwhole ? (
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                handlePress();
-              }}
+            <View
               style={{
                 width: "82%",
-                marginTop: "2%",
+                marginTop: "1%",
                 marginLeft: "2%",
                 gap: "4%",
                 backgroundColor: "",
+                position: "relative", //1. 親要素を基準にする
+                paddingTop: 10,
               }}
             >
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handlePress();
+                }}
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 100,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "absolute",
+                  top: -12,
+                  left: -12,
+                  zIndex: 1,
+                }}
+              >
+                <MaskedView
+                  style={{ width: "100%", height: "100%" }}
+                  maskElement={
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <AntDesign name="closecircleo" size={20} color="black" />
+                    </View>
+                  }
+                >
+                  <LinearGradient
+                    colors={["#ff5a5a", "#ff8282"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 2, y: 1 }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </MaskedView>
+              </TouchableOpacity>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>日々</Text>
               <Text style={{ fontSize: 17, color: "#777" }}>
                 {DailySuggestion}
@@ -188,75 +308,88 @@ const Input = () => {
               <Text style={{ fontSize: 17, color: "#777" }}>
                 {LifeSuggestion}
               </Text>
-            </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
               onPress={handlePress}
               style={{
                 width: "82%",
-                justifyContent: "center",
-                alignItems: "center",
                 paddingLeft: "10%",
                 marginLeft: "2%",
                 backgroundColor: "",
               }}
             >
               <Text style={{ fontSize: 16, color: "#555" }}>
-                タップしてヒントを見る💡
+                {content}
+                {"\n"}
+                <View
+                  style={{
+                    backgroundColor: "",
+                    paddingTop: 70,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, color: "red" }}>
+                    タップしてヒントを表示💡
+                  </Text>
+                </View>
               </Text>
             </TouchableOpacity>
           )}
           <View
             style={{
-              marginTop: "1%",
+              marginTop: "-1%",
               marginLeft: "-2%",
-              gap: "4%",
+              gap: "2%",
               width: "15%",
               height: "65%",
               borderRadius: 30,
             }}
           >
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                handleSave();
-              }}
-              style={{
-                width: 70,
-                height: 55,
-                borderRadius: 100,
-                justifyContent: "center",
-                paddingTop: "12%",
-                shadowOpacity: 0.2,
-                shadowRadius: 4,
-                elevation: 3,
-                paddingRight: 8,
-              }}
-            >
-              <MaskedView
-                style={{ width: "100%", height: "100%" }}
-                maskElement={
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Feather name="save" size={47} color="#fff" />
-                  </View>
-                }
+            {!suggestionwhole ? (
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  handlePress();
+                }}
+                style={{
+                  width: 56,
+                  height: 55,
+                  borderRadius: 100,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  paddingLeft: 3,
+                }}
               >
-                <LinearGradient
-                  colors={["#58baff", "#d2ecff"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 2, y: 1 }}
+                <MaskedView
                   style={{ width: "100%", height: "100%" }}
-                />
-              </MaskedView>
-            </TouchableOpacity>
-
-            {suggestionwhole && (
+                  maskElement={
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <AntDesign
+                        name="questioncircleo"
+                        size={46}
+                        color="#fff"
+                      />
+                    </View>
+                  }
+                >
+                  <LinearGradient
+                    colors={["#58baff", "#d2ecff"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 2, y: 1 }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </MaskedView>
+              </TouchableOpacity>
+            ) : (
               <TouchableOpacity
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -300,46 +433,6 @@ const Input = () => {
                 </MaskedView>
               </TouchableOpacity>
             )}
-
-            {/* {suggestionwhole && (
-              <TouchableOpacity
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  handlePress();
-                }}
-                style={{
-                  backgroundColor: "",
-                  width: 78,
-                  height: 55,
-                  borderRadius: 100,
-                  justifyContent: "center",
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                  elevation: 3,
-                }}
-              >
-                <MaskedView
-                  style={{ width: "100%", height: "100%" }}
-                  maskElement={
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <AntDesign name="close" size={57} color="#fff" />
-                    </View>
-                  }
-                >
-                  <LinearGradient
-                    colors={["#ff6a6a", "#ff4747"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 2, y: 1 }}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </MaskedView>
-              </TouchableOpacity>
-            )} */}
           </View>
         </View>
       </View>
