@@ -251,8 +251,8 @@ const Input = () => {
             <View
               style={{
                 width: "82%",
-                marginTop: "1%",
-                marginLeft: "2%",
+                marginTop: "0%",
+                marginLeft: "3%",
                 gap: "4%",
                 position: "relative",
                 paddingTop: 10,
@@ -264,14 +264,14 @@ const Input = () => {
                   setsuggestionwhole(false);
                 }}
                 style={{
-                  width: 20,
-                  height: 20,
+                  width: 25,
+                  height: 25,
                   borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
                   position: "absolute",
-                  top: -12,
-                  left: -12,
+                  top: -9,
+                  left: -18,
                   zIndex: 1,
                 }}
               >
@@ -285,7 +285,8 @@ const Input = () => {
                         alignItems: "center",
                       }}
                     >
-                      <AntDesign name="closecircleo" size={20} color="black" />
+                      {/* <AntDesign name="closecircle" size={23} color="black" /> */}
+                      <AntDesign name="closecircleo" size={24} color="black" />
                     </View>
                   }
                 >
@@ -336,22 +337,12 @@ const Input = () => {
                     {`今日は「${todaySpecial}」です`}
                   </Text> //nullにはならないけど念のため
                 )}
-                　{" "}
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: "red",
-                    marginTop: 8,
-                  }}
-                >
-                  タップしてヒントを表示💡
-                </Text>
               </View>
             </TouchableOpacity>
           )}
           <View
             style={{
-              marginTop: "-1%",
+              marginTop: "0%",
               marginLeft: "-2%",
               gap: "2%",
               width: "15%",
@@ -371,10 +362,7 @@ const Input = () => {
                   borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                  elevation: 3,
-                  paddingLeft: 3,
+                  paddingLeft: 10,
                 }}
               >
                 <MaskedView
@@ -414,9 +402,6 @@ const Input = () => {
                   height: 55,
                   borderRadius: 100,
                   justifyContent: "center",
-                  shadowOpacity: 0.2,
-                  shadowRadius: 4,
-                  elevation: 3,
                   paddingRight: 8,
                 }}
               >
