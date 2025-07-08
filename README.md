@@ -1,50 +1,46 @@
-# Welcome to your Expo app 👋
+プロジェクト名
+概要
+このアプリは〇〇を目的とした〇〇です。
+TypeScriptを使って開発しています。
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+主な機能
+機能1（例：データの追加・削除）
 
-## Get started
+機能2（例：状態の切り替え）
 
-1. Install dependencies
+機能3（例：フォームバリデーション）
 
-   ```bash
-   npm install
-   ```
+使用技術
+TypeScript
 
-2. Start the app
+フレームワーク名（例：React、Next.js）
 
-   ```bash
-   npx expo start
-   ```
+スタイリング方法（例：CSS Modules、Tailwind CSS）
 
-In the output, you'll find options to open the app in a
+ビルドツール（例：Vite、Create React App）
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+インストール方法
+bash
+コピーする
+編集する
+git clone https://github.com/ユーザー名/リポジトリ名.git
+cd リポジトリ名
+npm install
+npm run dev
+使い方
+使い方1（例：タスクの追加）
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+使い方2（例：状態の切り替え）
 
-## Get a fresh project
+使い方3（例：削除方法）
 
-When you're ready, run:
+開発状況
+現在の開発状況や今後の予定を記載してください。
 
-```bash
-npm run reset-project
-```
+作者情報
+名前: あなたの名前
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+GitHub: https://github.com/ユーザー名
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+ライセンス
+MIT License
