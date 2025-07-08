@@ -1,46 +1,28 @@
-プロジェクト名
-概要
-このアプリは〇〇を目的とした〇〇です。
+##stepin
+##概要
+このアプリは絶対に継続できるを目的とした日記アプリです。
 TypeScriptを使って開発しています。
 
-主な機能
-機能1（例：データの追加・削除）
+##主な機能
+機能1　日記の追加、過去の日記を読む
+機能2 話題提案機能
+機能3 ユーザにあった時間でのpush通知
+機能4 連続記録機能
 
-機能2（例：状態の切り替え）
-
-機能3（例：フォームバリデーション）
-
-使用技術
+##使用技術
 TypeScript
-
-フレームワーク名（例：React、Next.js）
-
-スタイリング方法（例：CSS Modules、Tailwind CSS）
-
-ビルドツール（例：Vite、Create React App）
-
-インストール方法
-bash
-コピーする
-編集する
-git clone https://github.com/ユーザー名/リポジトリ名.git
-cd リポジトリ名
-npm install
-npm run dev
-使い方
-使い方1（例：タスクの追加）
-
-使い方2（例：状態の切り替え）
-
-使い方3（例：削除方法）
+フレームワーク名　React
+スタイリング方法　- Inline styles with React Native's `style` prop
+ビルドツール　- Expo CLI (managed workflow)
 
 開発状況
-現在の開発状況や今後の予定を記載してください。
+ローカルによる保存なのでサーバに保存したい
 
 作者情報
-名前: あなたの名前
+GitHub: https://github.com/kuruton3910
+GitHub: https://github.com/taiga-ui
+GitHub: https://github.com/yuchizzz
 
-GitHub: https://github.com/ユーザー名
+## License
+This project is licensed under the MIT License.
 
-ライセンス
-MIT License
