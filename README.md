@@ -1,36 +1,47 @@
-## stepin
-## 概要
-このアプリは絶対に継続できるを目的とした日記アプリです。
-TypeScriptを使って開発しています。
+# stepin
 
-## 主な機能
-機能1　日記の追加、過去の日記を読む
+このアプリは **「絶対に継続できる」** を目的とした日記アプリです。  
+TypeScript & React Native を使用して開発しています。
 
-機能2 話題提案機能
+---
 
-機能3 ユーザにあった時間でのpush通知
+##  主な機能
 
-機能4 連続記録機能
+-  **日記の追加・過去の日記の閲覧**
+-  **話題提案機能**  
+  （毎日3つの質問をランダムで提案）
+-  **ユーザーに合った時間帯での Push通知**
+-  **連続記録（Streak）機能**  
+  （続けるほど炎が大きく赤く成長）
 
-## 使用技術
-TypeScript
+---
 
-フレームワーク名　React
+## 🛠 使用技術
 
-スタイリング方法　- Inline styles with React Native's `style` prop
+| 項目              | 内容                                             |
+|------------------|-------------------------------------------------|
+| 言語             | TypeScript                                      |
+| フレームワーク   | React Native                                    |
+| スタイリング     | Inline styles with React Native's `style` prop  |
+| ビルドツール     | Expo CLI (managed workflow)                     |
 
-ビルドツール　- Expo CLI (managed workflow)
+---
 
-## 開発状況
-ローカルによる保存なのでサーバに保存したい
+##  開発状況
 
-## 作者情報
-GitHub: https://github.com/kuruton3910
+現在はローカルストレージに保存しています。  
+今後はサーバを利用したデータ保存に拡張予定です。
 
-GitHub: https://github.com/taiga-ui
+---
 
-GitHub: https://github.com/yuchizzz
+##  作者
 
-## License
+- [kuruton3910](https://github.com/kuruton3910)
+- [taiga-ui](https://github.com/taiga-ui)
+- [yuchizzz](https://github.com/yuchizzz)
+
+---
+
+##  ライセンス
+
 This project is licensed under the MIT License.
-
