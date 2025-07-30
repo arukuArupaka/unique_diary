@@ -1,4 +1,11 @@
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from "react-native"; // [change] StyleSheet 追加（ヘアライン区切りで使用）
 import React, { useCallback, useState } from "react";
 import * as Haptics from "expo-haptics";
 import Feather from "@expo/vector-icons/Feather";
@@ -131,7 +138,7 @@ const Input = () => {
           const text = await AsyncStorage.getItem(key);
           setContent(
             !text || text.trim() === ""
-              ? "今日のこと、少し言葉にしてみない？"
+              ? "今日の出来事を言葉にしよう"
               : "お疲れ様明日も頑張ろう！"
           );
         } catch (error) {
@@ -319,23 +326,58 @@ const Input = () => {
               onPress={() => setsuggestionwhole(true)}
               style={{
                 width: "82%",
-                paddingLeft: "10%",
+                paddingHorizontal: 16, // [change] カード内余白を左右16に統一
+                paddingVertical: 12, // [change] 上下余白を12に統一
                 marginLeft: "2%",
               }}
             >
               {/* テキスト立て並べに取り敢えずしています*/}
               <View>
-                <Text style={{ fontSize: 16, color: "#555" }}>{content}</Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: "#444",
+                    fontWeight: "600",
+                    lineHeight: 26, // [change] 行間で高さ安定
+                    textAlign: "center",
+                    includeFontPadding: false,
+                  }}
+                  numberOfLines={2} // [change] 長文時に2行で省略
+                >
+                  {content}
+                </Text>
+
+                <View
+                  style={{
+                    marginTop: 10, // [change] タイトルと本文の間隔
+                    marginBottom: 8,
+                    borderTopWidth: StyleSheet.hairlineWidth, // [change] うっすら区切り線
+                    borderTopColor: "#E9EEF3",
+                  }}
+                />
+
                 {todaySpecial && (
-                  <Text
+                  <View
                     style={{
-                      fontSize: 15,
-                      color: "black",
-                      marginTop: 6,
+                      alignItems: "center", // [change] 横中央
+                      justifyContent: "center", // [change] 高さは自動で中央寄せ
+                      paddingVertical: 6, // [change] 固定heightをやめて切れ対策
                     }}
                   >
-                    {`今日は「${todaySpecial}」です`}
-                  </Text> //nullにはならないけど念のため
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: "#111",
+                        textAlign: "center",
+                        fontWeight: "500",
+                        lineHeight: 24,
+                        includeFontPadding: false,
+                        transform: [{ translateY: 4 }], // [change] 縦中央より少し下に
+                      }}
+                    >
+                      {`今日は\n「${todaySpecial}」\nです🐧`}
+                    </Text>
+                  </View>
                 )}
               </View>
             </TouchableOpacity>
