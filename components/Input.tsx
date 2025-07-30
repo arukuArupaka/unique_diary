@@ -198,9 +198,9 @@ const Input = () => {
             fontSize: 20,
           }}
           placeholder={
-            pathname === "/InputPase"
-              ? `${selectedDate}の日記を書いてね`
-              : "今日はどんな日だった？"
+           selectedDate === getTodayString()
+              ?"今日はどんな日だった？"
+              : `${selectedDate}の日記を書いてね`
           }
           multiline
           scrollEnabled={true}
@@ -400,7 +400,7 @@ const Input = () => {
                         style={{
                           fontSize: 20,
                           color: "#111",
-                          fontWeight: "450",
+                          fontWeight: "400",
                           includeFontPadding: false,
                         }}
                       >

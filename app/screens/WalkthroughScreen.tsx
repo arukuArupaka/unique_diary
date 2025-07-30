@@ -80,7 +80,7 @@ const WalkthroughScreen = () => {
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   const goToHome = () => {
-    router.replace('/InputPase');  // ← 日記入力画面のパスに変更
+    router.replace("/InputPase"); // ← トップではなく日記画面へ遷移
   };
 
   const renderItem = ({ item }: { item: Slide }) => <SlideItem item={item} />;

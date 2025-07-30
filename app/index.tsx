@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from "react";
-import {
-  Keyboard,
-  TouchableWithoutFeedback,
-  View,
-  ActivityIndicator,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import Header from "./header";
-import Footer from "./footer";
-import Input from "@/components/Input";
-import { useSuggestion } from "../components/Suggestion_Section";
-import ContionuousIcon from "@/components/ContionuousIcon";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Index = () => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
-
-  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
-    useSuggestion();
-
-  const [suggestionwhole, setsuggestionwhole] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const redirectToWalkthrough = async () => {
-      await router.replace("/screens/WalkthroughScreen"); // 起動時に必ずウォークスルー画面へ遷移
+    const checkFirstLaunch = async () => {
+      try {
+        const hasLaunched = await AsyncStorage.getItem("hasLaunched");
+        if (hasLaunched === null) {
+          // 初回起動：ウォークスルーへ
+          await AsyncStorage.setItem("hasLaunched", "true");
+          router.replace("/screens/WalkthroughScreen");
+        } else {
+          // 2回目以降：日記入力画面へ
+          router.replace("/InputPase");
+        }
+      } catch (error) {
+        console.error("初回起動判定エラー:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    redirectToWalkthrough();
+
+    checkFirstLaunch();
   }, []);
 
   if (loading) {
@@ -36,19 +37,7 @@ const Index = () => {
     );
   }
 
-  // ここには通常は到達しない想定（遷移中はloadingがtrueのままなので）
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
-        <Header />
-        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-          <Input />
-          <ContionuousIcon />
-        </View>
-        <Footer />
-      </View>
-    </TouchableWithoutFeedback>
-  );
+  return null;
 };
 
 export default Index;
