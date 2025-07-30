@@ -14,11 +14,13 @@ export async function requestNotificationPermission(): Promise<boolean> {
 type DiaryTime = { hour: number; minute: number };
 
 // AsyncStorageから過去の記録を取得し平均時刻を計算する関数
-export const getAverageDiaryTime = async (): Promise<DiaryTime> => {
+export const getAverageDiaryTime = async (): Promise<DiaryTime | null> => {
   const historyRaw = await AsyncStorage.getItem("diary-time-history");
   const history: DiaryTime[] = historyRaw ? JSON.parse(historyRaw) : [];
 
-  if (history.length === 0) return { hour: 20, minute: 0 }; // デフォルト20:00
+  if (history.length === 0) {
+    return null; // 平均が出せない場合は null を返す
+  }
 
   let totalMinutes = 0;
   history.forEach(({ hour, minute }) => {
@@ -40,9 +42,16 @@ export async function scheduleDailyNotification() {
     return;
   }
 
-  const { hour, minute } = await getAverageDiaryTime();
+  const avgTime = await getAverageDiaryTime();
 
-  await Notifications.cancelAllScheduledNotificationsAsync(); // 既存の通知をキャンセル(Expoの通知全部！！？？)
+  if (!avgTime) {
+    console.log("記録がないため通知をスケジュールしません");
+    return; // デフォルトの20:00で通知されないように
+  }
+
+  const { hour, minute } = avgTime;
+
+  await Notifications.cancelAllScheduledNotificationsAsync(); // 既存の通知をキャンセル
 
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -50,18 +59,19 @@ export async function scheduleDailyNotification() {
       body: "そろそろ日記の時間かも？今日も振り返ろう ✍️",
     },
     trigger: {
-      type: "calendar", //カレンダー型で20としたら、２０時間後ではなく、２０時に
+      type: "calendar",
       hour,
       minute,
       repeats: true,
-    } as any, // エラー回避？
+    } as any,
   });
 }
 
-// 新しい日記の記録時間を履歴に追加して保存する例
+// 新しい日記の記録時間を履歴に追加して保存する関数
 export const addDiaryTimeRecord = async (newTime: DiaryTime) => {
   const historyRaw = await AsyncStorage.getItem("diary-time-history");
   const history: DiaryTime[] = historyRaw ? JSON.parse(historyRaw) : [];
   history.push(newTime);
   await AsyncStorage.setItem("diary-time-history", JSON.stringify(history));
 };
+
