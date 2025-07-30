@@ -17,7 +17,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 const CARD_IMAGE = {
   uri: "https://images.unsplash.com/photo-1549421254-b088a3e35594?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3087&q=80",
 };
-const CARD_WIDTH = 150; //ここでカードの幅いじれる
+const CARD_WIDTH = 360; //ここでカードの幅いじれる
 const CARD_HEIGHT = 150; //ここでカードの高さをいじれる
 
 // ホログラム風のカラフルなグラデーション色

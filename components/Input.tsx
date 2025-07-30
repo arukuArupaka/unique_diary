@@ -19,6 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Entypo from "@expo/vector-icons/Entypo";
 import { whatDayList } from "@/data/whatDayList";
+import * as Font from "expo-font";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
@@ -35,6 +36,7 @@ const Input = () => {
     return now.toISOString().slice(5, 10); // "MM-DD"　  /** JST の MM-DD 文字列を返す */
   };
   const todaySpecial = whatDayList[getTodayKey()] ?? null; //nullは念のため
+
   const getTodayString = (): string => {
     const now = new Date();
     now.setHours(now.getHours() + 9);
@@ -44,6 +46,7 @@ const Input = () => {
   const isValidDateString = (dateStr: string) => {
     return /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
   };
+
   const updateStreak = async (dateStr: string) => {
     try {
       const today = getTodayString();
@@ -127,6 +130,7 @@ const Input = () => {
       console.error(error);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       const isTodayDiaryFilled = async () => {
@@ -170,8 +174,10 @@ const Input = () => {
         : isTodayDiaryFilled();
     }, [])
   );
+
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
+      {/* 上段：入力ボックス */}
       <View
         style={{
           height: "50%",
@@ -239,6 +245,7 @@ const Input = () => {
         </TouchableOpacity>
       </View>
 
+      {/* 下段：提案カード／今日は●●です */}
       <View style={{ flexDirection: "row", width: "100%", height: "44%" }}>
         <View
           style={{
@@ -252,6 +259,7 @@ const Input = () => {
             shadowOpacity: 0.3,
             shadowRadius: 4,
             elevation: 3,
+            position: "relative", // [change] 右上ボタンを重ねるため
           }}
         >
           {suggestionwhole ? (
@@ -292,7 +300,6 @@ const Input = () => {
                         alignItems: "center",
                       }}
                     >
-                      {/* <AntDesign name="closecircle" size={23} color="black" /> */}
                       <AntDesign name="closecircleo" size={24} color="black" />
                     </View>
                   }
@@ -325,71 +332,94 @@ const Input = () => {
             <TouchableOpacity
               onPress={() => setsuggestionwhole(true)}
               style={{
-                width: "82%",
-                paddingHorizontal: 16, // [change] カード内余白を左右16に統一
-                paddingVertical: 12, // [change] 上下余白を12に統一
-                marginLeft: "2%",
+                width: "100%", // [change] 本文は全面に
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                marginLeft: 0,
               }}
             >
-              {/* テキスト立て並べに取り敢えずしています*/}
               <View>
                 <Text
                   style={{
                     fontSize: 18,
                     color: "#444",
                     fontWeight: "600",
-                    lineHeight: 26, // [change] 行間で高さ安定
+                    lineHeight: 26,
                     textAlign: "center",
                     includeFontPadding: false,
+                    marginTop: 6,
                   }}
-                  numberOfLines={2} // [change] 長文時に2行で省略
+                  numberOfLines={2}
                 >
                   {content}
                 </Text>
 
                 <View
                   style={{
-                    marginTop: 10, // [change] タイトルと本文の間隔
+                    marginTop: 20,
                     marginBottom: 8,
-                    borderTopWidth: StyleSheet.hairlineWidth, // [change] うっすら区切り線
+                    borderTopWidth: StyleSheet.hairlineWidth,
                     borderTopColor: "#E9EEF3",
                   }}
                 />
 
                 {todaySpecial && (
-                  <View
-                    style={{
-                      alignItems: "center", // [change] 横中央
-                      justifyContent: "center", // [change] 高さは自動で中央寄せ
-                      paddingVertical: 6, // [change] 固定heightをやめて切れ対策
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "#111",
-                        textAlign: "center",
-                        fontWeight: "500",
-                        lineHeight: 24,
-                        includeFontPadding: false,
-                        transform: [{ translateY: 4 }], // [change] 縦中央より少し下に
-                      }}
-                    >
-                      {`今日は\n「${todaySpecial}」\nです🐧`}
-                    </Text>
+                  // [change] 左／中央（大きめ）／右 の3段構成
+                  <View style={{ paddingVertical: 6 }}>
+                    {/* 左寄せ：今日は */}
+                    <View style={{ alignItems: "flex-start" }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#111",
+                          fontWeight: "400",
+                          includeFontPadding: false,
+                        }}
+                      >
+                        今日は
+                      </Text>
+                    </View>
+
+                    {/* 中央：●●（大きく） */}
+                    <View style={{ alignItems: "center", marginVertical: 2 }}>
+                      <Text
+                        style={{
+                          fontSize: 25, // [change] ●●のみ大きめ
+                          fontWeight: "800",
+                          color: "#222",
+                          includeFontPadding: false,
+                        }}
+                      >
+                        「{todaySpecial}」
+                      </Text>
+                    </View>
+
+                    {/* 右寄せ：です🐧 */}
+                    <View style={{ alignItems: "flex-end" }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#111",
+                          fontWeight: "450",
+                          includeFontPadding: false,
+                        }}
+                      >
+                        です🐧
+                      </Text>
+                    </View>
                   </View>
                 )}
               </View>
             </TouchableOpacity>
           )}
+
+          {/* 右上ボタン群：absoluteで重ねる（テキストが下に食い込める） */}
           <View
             style={{
-              marginTop: "0%",
-              marginLeft: "-2%",
-              gap: "2%",
-              width: "15%",
-              height: "65%",
-              borderRadius: 30,
+              position: "absolute", // [change]
+              top: 8,
+              right: 8,
+              zIndex: 10,
             }}
           >
             {!suggestionwhole ? (
@@ -404,7 +434,6 @@ const Input = () => {
                   borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
-                  paddingLeft: 10,
                 }}
               >
                 <MaskedView
@@ -444,7 +473,6 @@ const Input = () => {
                   height: 55,
                   borderRadius: 100,
                   justifyContent: "center",
-                  paddingRight: 8,
                 }}
               >
                 <MaskedView

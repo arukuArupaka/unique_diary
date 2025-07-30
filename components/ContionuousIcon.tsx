@@ -22,7 +22,7 @@ const ContionuousIcon = () => {
     return ["#00FFFF", "#00BFFF"]; // 青
   };
   useEffect(() => {
-    setStreak(20); // 一時的に数字をいじれる
+    setStreak(51); // 一時的に数字をいじれる
   }, []);
   const { streak, setStreak } = useStreak(0);
 
