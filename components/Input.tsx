@@ -246,7 +246,7 @@ const Input = () => {
       </View>
 
       {/* 下段：提案カード／今日は●●です */}
-      <View style={{ flexDirection: "row", width: "100%", height: "44%" }}>
+      <View style={{ flexDirection: "row", width: "100%", height: "48%" }}>
         <View
           style={{
             flexDirection: "row",
