@@ -197,6 +197,7 @@ const Input = () => {
             textAlignVertical: "top",
             fontSize: 20,
           }}
+          placeholderTextColor="#999"
           placeholder={
             selectedDate === getTodayString()
               ? "今日はどんな日だった？"
