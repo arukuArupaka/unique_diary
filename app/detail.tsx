@@ -84,7 +84,15 @@ const Detail = () => {
       iconName: "bell",
       onPress: () => {
         scheduleDailyNotification();
-        Alert.alert("通知を設定しました", "毎日20時にリマインドされます!");
+        Alert.alert("通知を設定しました", "リマインドされます!");
+      },
+    },
+    {
+      label: "リマインダー",
+      iconLib: Feather,
+      iconName: "bell",
+      onPress: () => {
+        router.replace("/screens/WalkthroughScreen");
       },
     },
   ];

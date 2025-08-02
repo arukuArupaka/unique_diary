@@ -1,4 +1,11 @@
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from "react-native"; // [change] StyleSheet 追加（ヘアライン区切りで使用）
 import React, { useCallback, useState } from "react";
 import * as Haptics from "expo-haptics";
 import Feather from "@expo/vector-icons/Feather";
@@ -12,6 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Entypo from "@expo/vector-icons/Entypo";
 import { whatDayList } from "@/data/whatDayList";
+import * as Font from "expo-font";
 
 const Input = () => {
   const [diaryText, setDiaryText] = useState("");
@@ -28,6 +36,7 @@ const Input = () => {
     return now.toISOString().slice(5, 10); // "MM-DD"　  /** JST の MM-DD 文字列を返す */
   };
   const todaySpecial = whatDayList[getTodayKey()] ?? null; //nullは念のため
+
   const getTodayString = (): string => {
     const now = new Date();
     now.setHours(now.getHours() + 9);
@@ -37,6 +46,7 @@ const Input = () => {
   const isValidDateString = (dateStr: string) => {
     return /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
   };
+
   const updateStreak = async (dateStr: string) => {
     try {
       const today = getTodayString();
@@ -120,6 +130,7 @@ const Input = () => {
       console.error(error);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       const isTodayDiaryFilled = async () => {
@@ -131,7 +142,7 @@ const Input = () => {
           const text = await AsyncStorage.getItem(key);
           setContent(
             !text || text.trim() === ""
-              ? "今日のこと、少し言葉にしてみない？"
+              ? "今日の出来事を言葉にしよう"
               : "お疲れ様明日も頑張ろう！"
           );
         } catch (error) {
@@ -163,8 +174,10 @@ const Input = () => {
         : isTodayDiaryFilled();
     }, [])
   );
+
   return (
     <View style={{ backgroundColor: "", height: "58%" }}>
+      {/* 上段：入力ボックス */}
       <View
         style={{
           height: "50%",
@@ -185,9 +198,9 @@ const Input = () => {
             fontSize: 20,
           }}
           placeholder={
-            pathname === "/InputPase"
-              ? `${selectedDate}の日記を書いてね`
-              : "今日はどんな日だった？"
+            selectedDate === getTodayString()
+              ? "今日はどんな日だった？"
+              : `${selectedDate}の日記を書いてね`
           }
           multiline
           scrollEnabled={true}
@@ -232,6 +245,7 @@ const Input = () => {
         </TouchableOpacity>
       </View>
 
+      {/* 下段：提案カード／今日は●●です */}
       <View style={{ flexDirection: "row", width: "100%", height: "44%" }}>
         <View
           style={{
@@ -245,6 +259,7 @@ const Input = () => {
             shadowOpacity: 0.3,
             shadowRadius: 4,
             elevation: 3,
+            position: "relative", // [change] 右上ボタンを重ねるため
           }}
         >
           {suggestionwhole ? (
@@ -285,7 +300,6 @@ const Input = () => {
                         alignItems: "center",
                       }}
                     >
-                      {/* <AntDesign name="closecircle" size={23} color="black" /> */}
                       <AntDesign name="closecircleo" size={24} color="black" />
                     </View>
                   }
@@ -318,55 +332,94 @@ const Input = () => {
             <TouchableOpacity
               onPress={() => setsuggestionwhole(true)}
               style={{
-                width: "82%",
-                paddingLeft: "10%",
-                marginLeft: "2%",
+                width: "100%", // [change] 本文は全面に
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                marginLeft: 0,
               }}
             >
               <View>
-                <Text style={{ fontSize: 16, color: "#555" }}>{content}</Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: "#444",
+                    fontWeight: "600",
+                    lineHeight: 26,
+                    textAlign: "center",
+                    includeFontPadding: false,
+                    marginTop: 6,
+                  }}
+                  numberOfLines={2}
+                >
+                  {content}
+                </Text>
+
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 8,
+                    marginTop: 20,
+                    marginBottom: 8,
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    borderTopColor: "#E9EEF3",
                   }}
-                >
-                  <Text style={{ fontSize: 15, color: "black", marginLeft: 4 }}>
-                    今日は「
-                  </Text>
-                  <View
-                    style={{
-                      backgroundColor: "#e0f2fe", // 薄い青色
-                      paddingHorizontal: 10,
-                      paddingVertical: 3,
-                      borderRadius: 12,
-                      marginHorizontal: 2,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#0ea5e9", // やや濃い青色
-                        fontWeight: "bold",
-                        fontSize: 15,
-                      }}
-                    >
-                      {todaySpecial}
-                    </Text>
+                />
+
+                {todaySpecial && (
+                  // [change] 左／中央（大きめ）／右 の3段構成
+                  <View style={{ paddingVertical: 6 }}>
+                    {/* 左寄せ：今日は */}
+                    <View style={{ alignItems: "flex-start" }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#111",
+                          fontWeight: "400",
+                          includeFontPadding: false,
+                        }}
+                      >
+                        今日は
+                      </Text>
+                    </View>
+
+                    {/* 中央：●●（大きく） */}
+                    <View style={{ alignItems: "center", marginVertical: 2 }}>
+                      <Text
+                        style={{
+                          fontSize: 25, // [change] ●●のみ大きめ
+                          fontWeight: "800",
+                          color: "#222",
+                          includeFontPadding: false,
+                        }}
+                      >
+                        「{todaySpecial}」
+                      </Text>
+                    </View>
+
+                    {/* 右寄せ：です🐧 */}
+                    <View style={{ alignItems: "flex-end" }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#111",
+                          fontWeight: "400",
+                          includeFontPadding: false,
+                        }}
+                      >
+                        です🐧
+                      </Text>
+                    </View>
                   </View>
-                  <Text style={{ fontSize: 15, color: "black" }}>」です</Text>
-                </View>
+                )}
               </View>
             </TouchableOpacity>
           )}
+
+          {/* 右上ボタン群：absoluteで重ねる（テキストが下に食い込める） */}
           <View
             style={{
-              marginTop: "0%",
-              marginLeft: "-2%",
-              gap: "2%",
-              width: "15%",
-              height: "65%",
-              borderRadius: 30,
+              position: "absolute", // [change]
+              top: 8,
+              right: 8,
+              zIndex: 10,
             }}
           >
             {!suggestionwhole ? (
@@ -381,7 +434,6 @@ const Input = () => {
                   borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
-                  paddingLeft: 10,
                 }}
               >
                 <MaskedView
@@ -421,7 +473,6 @@ const Input = () => {
                   height: 55,
                   borderRadius: 100,
                   justifyContent: "center",
-                  paddingRight: 8,
                 }}
               >
                 <MaskedView

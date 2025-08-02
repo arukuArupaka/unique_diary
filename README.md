@@ -1,50 +1,47 @@
-# Welcome to your Expo app 👋
+# stepin
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+このアプリは **「絶対に継続できる」** を目的とした日記アプリです。  
+TypeScript & React Native を使用して開発しています。
 
-## Get started
+---
 
-1. Install dependencies
+##  主な機能
 
-   ```bash
-   npm install
-   ```
+-  **日記の追加・過去の日記の閲覧**
+-  **話題提案機能**  
+  （毎日3つの質問をランダムで提案）
+-  **ユーザーに合った時間帯での Push通知**
+-  **連続記録（Streak）機能**  
+  （続けるほど炎が大きく赤く成長）
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠 使用技術
 
-In the output, you'll find options to open the app in a
+| 項目              | 内容                                             |
+|------------------|-------------------------------------------------|
+| 言語             | TypeScript                                      |
+| フレームワーク   | React Native                                    |
+| スタイリング     | Inline styles with React Native's `style` prop  |
+| ビルドツール     | Expo CLI (managed workflow)                     |
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+##  開発状況
 
-## Get a fresh project
+現在はローカルストレージに保存しています。  
+今後はサーバを利用したデータ保存に拡張予定です。
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+##  作者
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- [kuruton3910](https://github.com/kuruton3910)
+- [taiga-ui](https://github.com/taiga-ui)
+- [yuchizzz](https://github.com/yuchizzz)
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+##  ライセンス
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project is licensed under the MIT License.

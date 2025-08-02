@@ -1,53 +1,43 @@
-import React, { useState } from "react";
-import {
-  Alert,
-  Keyboard,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Header from "./header";
-import Footer from "./footer";
-import Input from "@/components/Input";
-import { useSuggestion } from "../components/Suggestion_Section";
-import StreakDisplay from "../components/StreakDisplay";
-import ContionuousIcon from "@/components/ContionuousIcon";
 
 const Index = () => {
-  const [diaryText, setDiaryText] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-  const { DailySuggestion, LifeSuggestion, CollegeSuggestion, handleSwap } =
-    useSuggestion();
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      try {
+        const hasLaunched = await AsyncStorage.getItem("hasLaunched");
+        if (hasLaunched === null) {
+          // 初回起動：ウォークスルーへ
+          await AsyncStorage.setItem("hasLaunched", "true");
+          router.replace("/screens/WalkthroughScreen");
+        } else {
+          // 2回目以降：日記入力画面へ
+          router.replace("/InputPase");
+        }
+      } catch (error) {
+        console.error("初回起動判定エラー:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const [suggestionwhole, setsuggestionwhole] = useState(false);
+    checkFirstLaunch();
+  }, []);
 
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
-        <Header />
-
-        <View
-          style={{
-            flex: 1,
-            paddingHorizontal: 20,
-            paddingTop: 20,
-          }}
-        >
-          <Input />
-
-          {/* 🔥 連続記録セクション */}
-          <ContionuousIcon />
-        </View>
-
-        <Footer />
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
       </View>
-    </TouchableWithoutFeedback>
-  );
+    );
+  }
+
+  return null;
 };
 
 export default Index;
