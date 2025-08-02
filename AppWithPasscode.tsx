@@ -1,9 +1,9 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import InitialScreen from "./password/InitialScreen";
-import AuthPasscodeScreen from "./password/AuthPasscodeScreen";
-import SetPasscodeScreen from "./password/SetPasscodeScreen";
+import InitialScreen from "./app/main/password/InitialScreen";
+import AuthPasscodeScreen from "./app/main/password/AuthPasscodeScreen";
+import SetPasscodeScreen from "./app/main/password/SetPasscodeScreen";
 import HomeScreen from "./index";
 
 const Stack = createNativeStackNavigator();

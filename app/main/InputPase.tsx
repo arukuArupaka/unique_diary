@@ -6,13 +6,14 @@ import {
   Text,
   Image,
 } from "react-native";
-import Hetter from "./header";
-import Hutter from "./footer";
+
 import { useSelectedDate } from "@/data/DateContext";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
 import ContionuousIcon from "@/components/ContionuousIcon";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const inputPase = () => {
   const { selectedDate, setSelectedDate } = useSelectedDate(); // setSelectedDate も取得
@@ -77,7 +78,7 @@ const inputPase = () => {
         }}
       >
         {/* ヘッダー部分 */}
-        <Hetter />
+        <Header />
         {/* メイン画面 */}
 
         <View
@@ -95,8 +96,8 @@ const inputPase = () => {
               style={{
                 width: "100%",
                 height: "38%",
-                paddingHorizontal: "5%",
-                paddingTop: "5%",
+                paddingHorizontal: "3%",
+                paddingTop: "8%",
               }}
             >
               <View
@@ -119,23 +120,10 @@ const inputPase = () => {
                 </ScrollView>
               </View>
             </View>
-            // <Image
-            //   source={require("../assets/images/StepiReviewToYesterday.png")}
-            //   style={{
-            //     position: "absolute",
-            //     left: 0,
-            //     bottom: 0,
-            //     width: 90,
-            //     height: 90,
-            //     resizeMode: "contain",
-            //     marginLeft: 5,
-            //     marginBottom: 5,
-            //   }}
-            // />
           )}
         </View>
         {/* フッター部分 */}
-        <Hutter />
+        <Footer />
       </View>
     </TouchableWithoutFeedback>
   );

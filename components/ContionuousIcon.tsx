@@ -5,10 +5,11 @@ import StreakDisplay from "./StreakDisplay";
 
 import * as Haptics from "expo-haptics";
 import { useEffect, useRef } from "react";
-import Rainbow from "@/app/rainbow";
+
 import * as Animatable from "react-native-animatable";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
+import Rainbow from "@/app/main/rainbow";
 
 const ContionuousIcon = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;

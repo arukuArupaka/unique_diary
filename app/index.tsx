@@ -14,10 +14,10 @@ const Index = () => {
         if (hasLaunched === null) {
           // 初回起動：ウォークスルーへ
           await AsyncStorage.setItem("hasLaunched", "true");
-          router.replace("/screens/WalkthroughScreen");
+          router.replace("/main/screens/WalkthroughScreen");
         } else {
           // 2回目以降：日記入力画面へ
-          router.replace("/InputPase");
+          router.replace("/main/InputPase");
         }
       } catch (error) {
         console.error("初回起動判定エラー:", error);

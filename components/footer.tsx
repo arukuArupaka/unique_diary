@@ -13,11 +13,11 @@ const Footer = () => {
   const inactiveColor = "#808080";
 
   const formatDate = (date: Date): string => {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-};
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
 
   const now = new Date();
   const month = now.getMonth() + 1;
@@ -42,7 +42,7 @@ const Footer = () => {
       {/* 日付ボタン */}
       <TouchableOpacity
         onPress={() => {
-          router.push("/second");
+          router.push("/main/second");
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         }}
         style={{
@@ -68,7 +68,7 @@ const Footer = () => {
               width: "100%",
               height: "25%",
               backgroundColor:
-                pathname === "/second" ? activeColor : inactiveColor,
+                pathname === "/main/second" ? activeColor : inactiveColor,
             }}
           />
           <View
@@ -89,7 +89,7 @@ const Footer = () => {
       <TouchableOpacity
         onPress={() => {
           setSelectedDate(formatDate(new Date())); // ✅ 今日をセット
-          router.push("/InputPase");
+          router.push("/main/InputPase");
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         }}
         style={{
@@ -106,14 +106,14 @@ const Footer = () => {
         <MaterialCommunityIcons
           name="home-edit-outline"
           size={46}
-          color={pathname === "/InputPase" ? activeColor : inactiveColor}
+          color={pathname === "/main/InputPase" ? activeColor : inactiveColor}
         />
       </TouchableOpacity>
 
       {/* リストボタン */}
       <TouchableOpacity
         onPress={() => {
-          router.push("/detail");
+          router.push("/main/detail");
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         }}
         style={{
@@ -130,7 +130,7 @@ const Footer = () => {
         <Entypo
           name="list"
           size={46}
-          color={pathname === "/detail" ? activeColor : inactiveColor}
+          color={pathname === "/main/detail" ? activeColor : inactiveColor}
         />
       </TouchableOpacity>
     </LinearGradient>

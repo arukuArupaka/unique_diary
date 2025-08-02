@@ -17,13 +17,14 @@ import {
   View,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-import Header from "./header";
-import Footer from "./footer";
+
 import { Calendar } from "react-native-calendars";
-import CustomCalendar from "../components/Calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import CustomCalendar from "@/components/Calendar";
 
 const Second = () => {
   const formatDateKey = (dateString: string) => {
@@ -124,7 +125,7 @@ const Second = () => {
           <TouchableOpacity
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              useRouter().push("/InputPase");
+              useRouter().push("/main/InputPase");
             }}
             style={{
               marginLeft: "80%",
