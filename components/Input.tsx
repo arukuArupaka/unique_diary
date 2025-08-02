@@ -323,20 +323,39 @@ const Input = () => {
                 marginLeft: "2%",
               }}
             >
-              {/* テキスト立て並べに取り敢えずしています*/}
               <View>
                 <Text style={{ fontSize: 16, color: "#555" }}>{content}</Text>
-                {todaySpecial && (
-                  <Text
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 8,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, color: "black", marginLeft: 4 }}>
+                    今日は「
+                  </Text>
+                  <View
                     style={{
-                      fontSize: 15,
-                      color: "black",
-                      marginTop: 6,
+                      backgroundColor: "#e0f2fe", // 薄い青色
+                      paddingHorizontal: 10,
+                      paddingVertical: 3,
+                      borderRadius: 12,
+                      marginHorizontal: 2,
                     }}
                   >
-                    {`今日は「${todaySpecial}」です`}
-                  </Text> //nullにはならないけど念のため
-                )}
+                    <Text
+                      style={{
+                        color: "#0ea5e9", // やや濃い青色
+                        fontWeight: "bold",
+                        fontSize: 15,
+                      }}
+                    >
+                      {todaySpecial}
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 15, color: "black" }}>」です</Text>
+                </View>
               </View>
             </TouchableOpacity>
           )}
