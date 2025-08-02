@@ -16,6 +16,7 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { scheduleDailyNotification } from "../components/notificationUtils";
 import "../notifications/notificationHandler";
 import * as SecureStore from "expo-secure-store";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Detail = () => {
   const router = useRouter();
@@ -88,9 +89,9 @@ const Detail = () => {
       },
     },
     {
-      label: "リマインダー",
+      label: "stepinとは",
       iconLib: Feather,
-      iconName: "bell",
+      iconName: "thumbs-up",
       onPress: () => {
         router.replace("/screens/WalkthroughScreen");
       },
