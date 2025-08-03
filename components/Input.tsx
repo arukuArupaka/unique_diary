@@ -395,7 +395,7 @@ const Input = () => {
                       </Text>
                     </View>
 
-                    {/* 右寄せ：です🐧 */}
+                    {/* 右寄せ：です */}
                     <View style={{ alignItems: "flex-end" }}>
                       <Text
                         style={{
@@ -405,7 +405,7 @@ const Input = () => {
                           includeFontPadding: false,
                         }}
                       >
-                        です🐧
+                        です
                       </Text>
                     </View>
                   </View>
