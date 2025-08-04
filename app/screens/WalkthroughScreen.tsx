@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   FlatList,
   TouchableOpacity,
   Animated,
-} from "react-native";
-import { useRouter } from "expo-router";
+} from 'react-native';
+import { useRouter } from 'expo-router';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 type Slide = {
   key: string;
@@ -20,26 +20,24 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    key: "1",
-    title: "日記、続いたことありますか？",
-    subtitle:
-      "何度も始めて、何度もやめた。\nでも、毎日ちょっと書けたら、きっと変われる。",
+    key: '1',
+    title: '日記、続いたことありますか？',
+    subtitle: '何度も始めて、何度もやめた。\nでも、毎日ちょっと書けたら、きっと変われる。',
   },
   {
-    key: "2",
-    title: "stepinは“続ける”を助けます",
-    subtitle: "毎日の質問と、通知と、記録の火が、\nあなたの習慣を守ります。",
+    key: '2',
+    title: 'stepinは“続ける”を助けます',
+    subtitle: '毎日の質問と、通知と、記録の火が、\nあなたの習慣を守ります。',
   },
   {
-    key: "3",
-    title: "書きたくなる仕掛け、たくさん",
-    subtitle: "毎日の質問、シンプルな画面、\n継続のごほうび。",
+    key: '3',
+    title: '書きたくなる仕掛け、たくさん',
+    subtitle: '毎日の質問、シンプルな画面、\n継続のごほうび。',
   },
   {
-    key: "4",
-    title: "あなたのペースで続けてみませんか？",
-    subtitle:
-      "大切なのは、ちょっとだけでも“続ける”こと。\nあなたの1日を、stepinと一緒に。",
+    key: '4',
+    title: 'あなたのペースで続けてみませんか？',
+    subtitle: '大切なのは、ちょっとだけでも“続ける”こと。\nあなたの1日を、stepinと一緒に。',
   },
 ];
 
@@ -90,7 +88,7 @@ const WalkthroughScreen = () => {
   const renderIndicators = () => (
     <View style={styles.indicatorContainer}>
       {slides.map((_, i) => {
-        const backgroundColor = i === currentIndex ? "#FF7F50" : "#ccc";
+        const backgroundColor = i === currentIndex ? '#FF7F50' : '#ccc';
         return <View key={i} style={[styles.indicator, { backgroundColor }]} />;
       })}
     </View>
@@ -127,45 +125,45 @@ export default WalkthroughScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EAF4FF",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#EAF4FF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   slide: {
     width: width,
-    alignItems: "center",
+    alignItems: 'center',
     padding: 24,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   title: {
     fontSize: 22,
-    fontWeight: "700",
-    color: "#333",
-    textAlign: "center",
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
-    color: "#555",
-    textAlign: "center",
+    color: '#555',
+    textAlign: 'center',
     lineHeight: 24,
   },
   button: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 60,
-    backgroundColor: "#FF7F50",
+    backgroundColor: '#FF7F50',
     paddingVertical: 12,
     paddingHorizontal: 48,
     borderRadius: 24,
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   indicatorContainer: {
-    flexDirection: "row",
-    position: "absolute",
+    flexDirection: 'row',
+    position: 'absolute',
     bottom: 120,
   },
   indicator: {
