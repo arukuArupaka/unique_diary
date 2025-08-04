@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Keyboard,
   Text,
@@ -9,14 +9,11 @@ import {
   Platform,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Header from "./header";
-import Footer from "./footer";
 import { useRouter, useFocusEffect } from "expo-router";
-import { scheduleDailyNotification } from "../components/notificationUtils";
-import "../notifications/notificationHandler";
+import { scheduleDailyNotification } from "@/utils/notificationUtils";
 import * as SecureStore from "expo-secure-store";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const Detail = () => {
   const router = useRouter();
@@ -61,7 +58,7 @@ const Detail = () => {
       iconName: passcodeEnabled ? "lock" : "unlock", //ちょっとこだわり
       onPress: () => {
         if (!passcodeEnabled) {
-          router.push("/set-passcode");
+          router.push("/main/set-passcode");
         } else {
           Alert.alert(
             "警告",
@@ -93,7 +90,7 @@ const Detail = () => {
       iconLib: Feather,
       iconName: "thumbs-up",
       onPress: () => {
-        router.replace("/screens/WalkthroughScreen");
+        router.replace("/main/screens/WalkthroughScreen");
       },
     },
   ];

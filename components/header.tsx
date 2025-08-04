@@ -37,7 +37,7 @@ const Header = () => {
         elevation: 3,
       }}
     >
-      {pathname === "/set-passcode" ? ( //戻るボタンが必要な時に戻るボタンに変化する。
+      {pathname === "/main/set-passcode" ? ( //戻るボタンが必要な時に戻るボタンに変化する。
         <TouchableOpacity
           style={{
             marginLeft: 3,
@@ -64,64 +64,6 @@ const Header = () => {
           {todayString} {/* 今日の日付を表示 */}
         </Text>
       )}
-      {/* <Feather
-      name="bell"
-      size={31}
-      color="black"
-      style={{
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 3,
-        marginTop: 3,
-        marginLeft: "33%",
-      }}
-    />
-    <TouchableOpacity
-      onPress={() => {
-        router.push("/"); //画面移動　エラーはあっても動く
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      }}
-      style={{
-        width: 35,
-        height: 35,
-        marginTop: 0,
-        backgroundColor: "#ffffff",
-        shadowColor: "black",
-        //shadowOffset: { width: 0, height: 2 }, //影
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-        elevation: 3,
-      }}
-    >
-      <View
-        style={{
-          width: "100%",
-          height: "25%",
-          backgroundColor: "red",
-          zIndex: 10,
-        }}
-      ></View>
-      <View
-        style={{
-          width: "100%",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingBottom: 13,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 22,
-            marginBottom: 0,
-            backgroundColor: "",
-            textAlign: "center",
-          }}
-        >
-          {day} {/* 今日の日の「日」の部分を表示
-        </Text>
-      </View>
-    </TouchableOpacity> */}
     </LinearGradient>
   );
 };

@@ -5,10 +5,11 @@ import StreakDisplay from "./StreakDisplay";
 
 import * as Haptics from "expo-haptics";
 import { useEffect, useRef } from "react";
-import Rainbow from "@/app/rainbow";
+
 import * as Animatable from "react-native-animatable";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
+import Rainbow from "@/app/main/rainbow";
 
 const ContionuousIcon = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -21,9 +22,9 @@ const ContionuousIcon = () => {
     if (streak < 30) return ["purple", "#8A2BE2"]; // 紫
     return ["#00FFFF", "#00BFFF"]; // 青
   };
-  // useEffect(() => {
-  //   setStreak(51); // 一時的に数字をいじれる
-  // }, []);
+  useEffect(() => {
+    setStreak(510); // 一時的に数字をいじれる
+  }, []);
   const { streak, setStreak } = useStreak(0);
 
   const iconSize = streak < 30 ? 50 + streak * 2 : 110;

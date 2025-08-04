@@ -11,7 +11,7 @@ import {
 import { usePathname, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Header from "@/app/header";
+import Header from "@/components/header";
 
 const SetPasscodeScreen: React.FC = () => {
   const router = useRouter();
