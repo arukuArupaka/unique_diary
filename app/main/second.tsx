@@ -6,8 +6,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useSelectedDate } from "@/data/DateContext";
 
-import { CardStyleInterpolators } from "@react-navigation/stack";
-
 import {
   SafeAreaView,
   Keyboard,

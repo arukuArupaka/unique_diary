@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import AuthPasscodeScreen from "./main/password/AuthPasscodeScreen";
-import { CardStyleInterpolators } from "@react-navigation/stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
