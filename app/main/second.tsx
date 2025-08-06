@@ -1,11 +1,10 @@
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Haptics from "expo-haptics";
-import { useRouter, useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState, useCallback } from "react";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useSelectedDate } from "@/data/DateContext";
-
 import {
   SafeAreaView,
   Keyboard,
@@ -14,9 +13,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
-
-import { Calendar } from "react-native-calendars";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -25,25 +21,21 @@ import Footer from "@/components/footer";
 import CustomCalendar from "@/components/Calendar";
 
 const Second = () => {
-  const formatDateKey = (dateString: string) => {
-    //YYYY-0M-0Dの０を消している
-    const [year, month, day] = dateString.split("-");
-    return `diary-${parseInt(year)}-${parseInt(month)}-${parseInt(day)}`; //paeseIntで0を消している
-  };
-
-  const { selectedDate, setSelectedDate } = useSelectedDate(); //日付を選択したときにselectedDateにyyyy-mm-ddの形で入る。
+  const { selectedDate, setSelectedDate } = useSelectedDate();
   const [diaryText, setDiaryText] = useState("");
-  const [todayDiary, setTodayDiary] = useState("読み込み中..."); //とりあえず書いてる
-  const selectday = () => {
-    return selectedDate;
+  const [todayDiary, setTodayDiary] = useState("読み込み中...");
+
+  const getTodayString = (): string => {
+    const now = new Date();
+    now.setHours(now.getHours() + 9);
+    return now.toISOString().split("T")[0];
   };
 
-  // 選択した日付の日記を読み込む
   useEffect(() => {
-    if (!selectedDate) return; //その日が押されたとき
+    if (!selectedDate) return;
     const loadDiaryForDate = async () => {
       try {
-        const key = formatDateKey(selectedDate); //keyの形を変更
+        const key = `diary-${selectedDate}`;
         const savedText = await AsyncStorage.getItem(key);
         setDiaryText(savedText || "まだこの日の日記はありません。");
       } catch (error) {
@@ -55,14 +47,14 @@ const Second = () => {
     loadDiaryForDate();
   }, [selectedDate]);
 
+  // 今日書かれた日記を読み込む
   useFocusEffect(
     useCallback(() => {
       const loadTodayDiary = async () => {
         try {
-          const today = new Date();
-          const key = `diary-${today.getFullYear()}-${
-            today.getMonth() + 1
-          }-${today.getDate()}`;
+          const todayStr = getTodayString();
+          // ★キーの形式を 'diary-YYYY-MM-DD' に統一
+          const key = `diary-${todayStr}`;
           const text = await AsyncStorage.getItem(key);
           setTodayDiary(text || "まだ日記は書かれていません。");
         } catch (error) {
@@ -79,7 +71,6 @@ const Second = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1, backgroundColor: "#f8f8ff" }}>
         <Header />
-        {/* メイン部分　*/}
         <View
           style={{
             flex: 1,
@@ -88,15 +79,12 @@ const Second = () => {
             backgroundColor: "",
           }}
         >
-          {/* ↓ここに作っていく */}
-          {/* カレンダー */}
           <View>
             <CustomCalendar
-              onDateSelected={setSelectedDate} //ここで日にちが押されたときにselectedDateにyyyy-mm-ddの形で入る。
+              onDateSelected={setSelectedDate}
               selectedDate={selectedDate}
             />
           </View>
-          {/* 日記表示 */}
           <View
             style={{
               width: "100%",
@@ -119,11 +107,16 @@ const Second = () => {
               <Text style={{ marginTop: 10, fontSize: 18 }}>{diaryText}</Text>
             </ScrollView>
           </View>
-          {/* 日記入力画面への移動 */}
           <TouchableOpacity
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              useRouter().push("/main/InputPase");
+              const router = useRouter();
+              // ★日付が選択されていなければ、今日の日付を送るように修正
+              const dateToSend = selectedDate || getTodayString();
+              router.push({
+                pathname: "/main/InputPase",
+                params: { entryDate: dateToSend }, // ★entryDateという名前で日付を手渡し
+              });
             }}
             style={{
               marginLeft: "80%",
@@ -152,4 +145,3 @@ const Second = () => {
 };
 
 export default Second;
-//export { selectday };

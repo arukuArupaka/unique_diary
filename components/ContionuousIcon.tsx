@@ -16,18 +16,18 @@ const ContionuousIcon = () => {
   const translateXAnim = useRef(new Animated.Value(0)).current;
   const getGradientColors = (streak: number): [string, string] => {
     if (streak < 1) return ["#666", "#333"]; // 黒
-    if (streak < 3) return ["#FFD700", "#FFA500"]; // 黄色
-    if (streak < 7) return ["orange", "#FF4500"]; // オレンジ
-    if (streak < 14) return ["red", "#b30000"]; // 赤
-    if (streak < 30) return ["purple", "#8A2BE2"]; // 紫
+    if (streak < 2) return ["#FFD700", "#FFA500"]; // 黄色
+    if (streak < 4) return ["orange", "#FF4500"]; // オレンジ
+    if (streak < 7) return ["red", "#b30000"]; // 赤
+    if (streak < 11) return ["purple", "#8A2BE2"]; // 紫
     return ["#00FFFF", "#00BFFF"]; // 青
   };
-  useEffect(() => {
-    setStreak(510); // 一時的に数字をいじれる
-  }, []);
+  // useEffect(() => {
+  //   setStreak(14); // 一時的に数字をいじれる
+  // }, []);
   const { streak, setStreak } = useStreak(0);
 
-  const iconSize = streak < 30 ? 50 + streak * 2 : 110;
+  const iconSize = streak < 14 ? 50 + streak * 5 : 120;
 
   const ContionuousIconAnimation = () => {
     Animated.sequence([
@@ -81,7 +81,7 @@ const ContionuousIcon = () => {
       }}
     >
       {/*🔥連続記録 */}
-      {streak > 50 ? (
+      {streak > 13 ? (
         <Rainbow />
       ) : (
         <TouchableOpacity

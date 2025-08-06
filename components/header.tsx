@@ -9,7 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 const now = new Date();
 const month = now.getMonth() + 1;
 const day = now.getDate();
-const todayString = `${month}月${day}日`; // 今日の日付
+const todayString = `${month}月${day}日`;
 const Header = () => {
   const [fontsLoaded] = useFonts({
     "Lato-Regular": require("../assets/fonts/Lato/Lato-Regular.ttf"),
@@ -17,7 +17,6 @@ const Header = () => {
   });
 
   const pathname = usePathname(); // 今どこの画面にいるか見れる。
-  //console.log("現在のパス:", pathname);
   return (
     <LinearGradient
       colors={["#d2ecff", "#f0f8ff"]}
@@ -37,7 +36,7 @@ const Header = () => {
         elevation: 3,
       }}
     >
-      {pathname === "/main/set-passcode" ? ( //戻るボタンが必要な時に戻るボタンに変化する。
+      {pathname === "/main/set-passcode" || pathname === "/main/analyze" ? (
         <TouchableOpacity
           style={{
             marginLeft: 3,

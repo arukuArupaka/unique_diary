@@ -1,72 +1,66 @@
-import Input from "@/components/Input";
-import {
-  TouchableWithoutFeedback,
-  View,
-  Keyboard,
-  Text,
-  Image,
-} from "react-native";
-
+import { TouchableWithoutFeedback, View, Keyboard, Text } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelectedDate } from "@/data/DateContext";
-import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
-import ContionuousIcon from "@/components/ContionuousIcon";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Input from "@/components/Input"; // Inputコンポーネントをインポート
+import ContionuousIcon from "@/components/ContionuousIcon";
 
-const inputPase = () => {
-  const { selectedDate, setSelectedDate } = useSelectedDate(); // setSelectedDate も取得
-  const [diaryText, setDiaryText] = useState("");
+const InputPase = () => {
+  const { selectedDate, setSelectedDate } = useSelectedDate();
+  // ★この画面では「前日の日記」を表示するためのState
+  const [previousDiaryText, setPreviousDiaryText] = useState("");
 
-  // 今日の日付を yyyy-mm-dd形式で取得する関数
+  // 今日の日付を "YYYY-MM-DD" 形式で取得する関数
   const getTodayString = (): string => {
     const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+    now.setHours(now.getHours() + 9);
+    return now.toISOString().split("T")[0];
   };
 
-  const yestselectedDatte = (dateString: string) => {
-    const [year, month, day] = dateString.split("-");
-    const date = new Date(Number(year), Number(month) - 1, Number(day));
+  // ★バグのあった日付計算関数を、安全なものに置き換え
+  // 指定された日付の「前日」を "YYYY-MM-DD" 形式で返す
+  const getYesterdayString = (dateString: string): string => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-").map(Number);
+    // JSのDateオブジェクトは月の計算（例: 3月1日の前日は2月28日）を自動で正しく行ってくれる
+    const date = new Date(year, month - 1, day);
     date.setDate(date.getDate() - 1);
+
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
     const d = String(date.getDate()).padStart(2, "0");
     return `${y}-${m}-${d}`;
   };
 
-  const yestdayDateKey = (dateString: string) => {
-    const [year, month, day] = dateString.split("-");
-    return `diary-${parseInt(year)}-${parseInt(month)}-${parseInt(day) - 1}`;
-  };
-
+  // selectedDateがセットされていなければ、今日の日付をセットする
   useEffect(() => {
     if (!selectedDate) {
       const today = getTodayString();
       setSelectedDate(today);
-    } else {
     }
   }, [selectedDate, setSelectedDate]);
 
-  // selectedDateが変わったら該当日の日記をAsyncStorageから読み込む
+  // selectedDateが変わったら、その「前日」の日記をAsyncStorageから読み込む
   useEffect(() => {
-    if (!selectedDate) return; // selectedDateがまだ無ければ何もしない
+    if (!selectedDate) return;
 
-    const loadDiaryForDate = async () => {
+    const loadPreviousDiary = async () => {
       try {
-        const key = yestdayDateKey(selectedDate);
+        const yesterdayStr = getYesterdayString(selectedDate);
+        // ★キーの形式を 'diary-YYYY-MM-DD' に完全に統一
+        const key = `diary-${yesterdayStr}`;
         const savedText = await AsyncStorage.getItem(key);
-        setDiaryText(savedText || "まだこの日の日記はありません。");
+        setPreviousDiaryText(savedText || "前の日の日記はありません。");
       } catch (error) {
-        setDiaryText("読み込みエラー");
-        console.error("指定日の読み込み失敗:", error);
+        setPreviousDiaryText("読み込みエラー");
+        console.error("前日の日記の読み込みに失敗:", error);
       }
     };
 
-    loadDiaryForDate();
+    loadPreviousDiary();
   }, [selectedDate]);
 
   return (
@@ -77,10 +71,7 @@ const inputPase = () => {
           backgroundColor: "#f8f8ff",
         }}
       >
-        {/* ヘッダー部分 */}
         <Header />
-        {/* メイン画面 */}
-
         <View
           style={{
             flex: 1,
@@ -88,7 +79,10 @@ const inputPase = () => {
             paddingTop: 20,
           }}
         >
+          {/* 日記入力コンポーネント */}
           <Input />
+
+          {/* 条件に応じて、連続日数アイコンか、前日の日記プレビューを表示 */}
           {selectedDate === getTodayString() ? (
             <ContionuousIcon />
           ) : (
@@ -112,21 +106,21 @@ const inputPase = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  {selectedDate ? yestselectedDatte(selectedDate) : ""}{" "}
-                  の日記だよ
+                  {getYesterdayString(selectedDate)} の日記
                 </Text>
                 <ScrollView style={{ marginTop: 10 }}>
-                  <Text style={{ fontSize: 18 }}>{diaryText}</Text>
+                  <Text style={{ fontSize: 18, lineHeight: 26 }}>
+                    {previousDiaryText}
+                  </Text>
                 </ScrollView>
               </View>
             </View>
           )}
         </View>
-        {/* フッター部分 */}
         <Footer />
       </View>
     </TouchableWithoutFeedback>
   );
 };
 
-export default inputPase;
+export default InputPase;

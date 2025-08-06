@@ -93,6 +93,14 @@ const Detail = () => {
         router.replace("/main/screens/WalkthroughScreen");
       },
     },
+    {
+      label: "分析",
+      iconLib: Feather,
+      iconName: "activity",
+      onPress: () => {
+        router.replace("/main/analyze");
+      },
+    },
   ];
 
   return (

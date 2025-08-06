@@ -1,43 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { supabase } from "../lib/supabase";
 
 const Index = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkFirstLaunch = async () => {
+    const checkAllAndNavigate = async () => {
       try {
-        const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-        if (hasLaunched === null) {
-          // 初回起動：ウォークスルーへ
-          await AsyncStorage.setItem("hasLaunched", "true");
-          router.replace("/main/screens/WalkthroughScreen");
+        // ステップ1: まずデバイス内のセッションを取得
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          // ケース1: デバイスにセッションがなければ、問答無用で認証画面へ
+          router.replace("/authScreen");
+          return; // ここで処理を終了
+        }
+
+        // ステップ2: セッションがある場合、それが本当に有効かサーバーに問い合わせる
+        const { error: userError } = await supabase.auth.getUser();
+
+        if (userError) {
+          // ケース2: サーバーでエラー → 古い無効なセッションが残っている
+          // 古いセッションを完全に削除してから認証画面へ
+          await supabase.auth.signOut();
+          router.replace("/authScreen");
+          return;
+        }
+
+        const requirePasscode =
+          (await SecureStore.getItemAsync("passcode_enabled")) === "true";
+
+        if (requirePasscode) {
+          router.replace("/main/InputPase");
         } else {
-          // 2回目以降：日記入力画面へ
+          // ケース3b: パスコードが不要な場合 → メイン画面へ
           router.replace("/main/InputPase");
         }
       } catch (error) {
-        console.error("初回起動判定エラー:", error);
-      } finally {
-        setLoading(false);
+        console.error("起動時チェックエラー:", error);
+        // 念のため、何かエラーがあれば認証画面へ
+        router.replace("/authScreen");
       }
     };
 
-    checkFirstLaunch();
+    checkAllAndNavigate();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  return null;
+  // チェック中はローディング画面を表示
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <ActivityIndicator size="large" />
+    </View>
+  );
 };
 
 export default Index;

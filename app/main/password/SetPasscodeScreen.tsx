@@ -106,7 +106,7 @@ const SetPasscodeScreen: React.FC = () => {
           <TouchableOpacity
             style={{
               alignSelf: "center",
-              backgroundColor: "#1e90ff",
+              backgroundColor: "#4db5ff",
               paddingHorizontal: 40,
               paddingVertical: 10,
               borderRadius: 8,
