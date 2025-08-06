@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 type Slide = {
   key: string;
@@ -55,9 +55,38 @@ const SlideItem: React.FC<{ item: Slide }> = ({ item }) => {
   }, []);
 
   return (
-    <Animated.View style={[styles.slide, { opacity: fadeAnim }]}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.subtitle}>{item.subtitle}</Text>
+    <Animated.View
+      style={[
+        {
+          width: width,
+          alignItems: "center",
+          padding: 24,
+          justifyContent: "center",
+        },
+        { opacity: fadeAnim },
+      ]}
+    >
+      <Text
+        style={{
+          fontSize: 22,
+          fontWeight: "700",
+          color: "#333",
+          textAlign: "center",
+          marginBottom: 12,
+        }}
+      >
+        {item.title}
+      </Text>
+      <Text
+        style={{
+          fontSize: 16,
+          color: "#555",
+          textAlign: "center",
+          lineHeight: 24,
+        }}
+      >
+        {item.subtitle}
+      </Text>
     </Animated.View>
   );
 };
@@ -88,16 +117,42 @@ const WalkthroughScreen = () => {
   const renderItem = ({ item }: { item: Slide }) => <SlideItem item={item} />;
 
   const renderIndicators = () => (
-    <View style={styles.indicatorContainer}>
+    <View
+      style={{
+        flexDirection: "row",
+        position: "absolute",
+        bottom: 120,
+      }}
+    >
       {slides.map((_, i) => {
         const backgroundColor = i === currentIndex ? "#FF7F50" : "#ccc";
-        return <View key={i} style={[styles.indicator, { backgroundColor }]} />;
+        return (
+          <View
+            key={i}
+            style={[
+              {
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 6,
+              },
+              { backgroundColor },
+            ]}
+          />
+        );
       })}
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#EAF4FF",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <FlatList
         ref={flatListRef}
         data={slides}
@@ -114,8 +169,26 @@ const WalkthroughScreen = () => {
       {renderIndicators()}
 
       {currentIndex === slides.length - 1 && (
-        <TouchableOpacity style={styles.button} onPress={goToHome}>
-          <Text style={styles.buttonText}>はじめる</Text>
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            bottom: 60,
+            backgroundColor: "#FF7F50",
+            paddingVertical: 12,
+            paddingHorizontal: 48,
+            borderRadius: 24,
+          }}
+          onPress={goToHome}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+          >
+            はじめる
+          </Text>
         </TouchableOpacity>
       )}
     </View>
@@ -123,55 +196,3 @@ const WalkthroughScreen = () => {
 };
 
 export default WalkthroughScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EAF4FF",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  slide: {
-    width: width,
-    alignItems: "center",
-    padding: 24,
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#333",
-    textAlign: "center",
-    marginBottom: 12,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "center",
-    lineHeight: 24,
-  },
-  button: {
-    position: "absolute",
-    bottom: 60,
-    backgroundColor: "#FF7F50",
-    paddingVertical: 12,
-    paddingHorizontal: 48,
-    borderRadius: 24,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  indicatorContainer: {
-    flexDirection: "row",
-    position: "absolute",
-    bottom: 120,
-  },
-  indicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginHorizontal: 6,
-  },
-});

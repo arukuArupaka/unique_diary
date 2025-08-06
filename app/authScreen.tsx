@@ -79,7 +79,7 @@ const AuthScreen = () => {
                   width: 80,
                   height: 80,
                   borderRadius: 40,
-                  backgroundColor: "#4A90E2",
+                  backgroundColor: "#4db5ff",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -153,7 +153,7 @@ const AuthScreen = () => {
               onPress={handleSignIn}
               disabled={loading}
               style={{
-                backgroundColor: loading ? "#a9c8e8" : "#4A90E2",
+                backgroundColor: loading ? "#a9c8e8" : "#4db5ff",
                 paddingVertical: 16,
                 borderRadius: 8,
                 alignItems: "center",
@@ -177,7 +177,7 @@ const AuthScreen = () => {
               disabled={loading}
               style={{
                 backgroundColor: "white", // ログインボタンと区別するため背景色を変更
-                borderColor: "#4A90E2", // 枠線の色
+                borderColor: "#4db5ff", // 枠線の色
                 borderWidth: 1,
                 paddingVertical: 16,
                 borderRadius: 8,
@@ -186,10 +186,10 @@ const AuthScreen = () => {
               }}
             >
               {loading ? (
-                <ActivityIndicator color="#4A90E2" />
+                <ActivityIndicator color="#4db5ff" />
               ) : (
                 <Text
-                  style={{ color: "#4A90E2", fontSize: 16, fontWeight: "bold" }}
+                  style={{ color: "#4db5ff", fontSize: 16, fontWeight: "bold" }}
                 >
                   新規登録
                 </Text>

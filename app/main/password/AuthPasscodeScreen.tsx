@@ -20,10 +20,37 @@ const AuthPasscodeScreen: React.FC<Props> = ({ onAuthenticated }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>パスコードを入力してください</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 30,
+        backgroundColor: "#fff",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 20,
+          textAlign: "center",
+          marginBottom: 20,
+          color: "#333",
+        }}
+      >
+        パスコードを入力してください
+      </Text>
       <TextInput
-        style={styles.input}
+        style={{
+          borderWidth: 1,
+          borderColor: "#ccc",
+          borderRadius: 10,
+          fontSize: 24,
+          paddingVertical: 12,
+          paddingHorizontal: 20,
+          textAlign: "center",
+          backgroundColor: "#f9f9f9",
+          marginBottom: 20,
+          color: "#000",
+        }}
         keyboardType="number-pad"
         secureTextEntry
         maxLength={4}
@@ -38,30 +65,3 @@ const AuthPasscodeScreen: React.FC<Props> = ({ onAuthenticated }) => {
 };
 
 export default AuthPasscodeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 30,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 20,
-    textAlign: "center",
-    marginBottom: 20,
-    color: "#333",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    fontSize: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    textAlign: "center",
-    backgroundColor: "#f9f9f9",
-    marginBottom: 20,
-    color: "#000", // ✅ 入力した数字が見える色
-  },
-});

@@ -33,33 +33,27 @@ const Analyze = () => {
           } = await supabase.auth.getUser();
           if (!user) throw new Error("ユーザーが見つかりません");
 
-          const today = getTodayString(); // 今日の日付を取得
-
-          // --- 統計データの取得準備 ---
+          const today = getTodayString();
           const statsPromise = supabase
             .from("users")
             .select("consecutive_days, max_consecutive_days, cumulative_days")
             .eq("id", user.id)
             .single();
 
-          // --- ★★★ ここを修正 ★★★ ---
-          // 「今日の日付」のフィードバックを取得する準備
           const feedbackPromise = supabase
             .from("diaries")
             .select("feedback")
             .eq("user_id", user.id)
-            .eq("entry_date", today) // ★「今日の日付」に限定
+            .eq("entry_date", today)
             .not("feedback", "is", null)
             .limit(1)
             .single();
 
-          // --- 両方の処理を同時に実行し、完了を待つ ---
           const [statsResult, feedbackResult] = await Promise.all([
             statsPromise,
             feedbackPromise,
           ]);
 
-          // --- 結果をStateに保存 ---
           if (statsResult.error && statsResult.status !== 406) {
             throw statsResult.error;
           }

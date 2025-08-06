@@ -54,7 +54,6 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    // ★★★ ここが修正された部分です ★★★
     if (error instanceof Error) {
       return new Response(JSON.stringify({ error: error.message }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
