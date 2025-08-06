@@ -94,6 +94,14 @@ const Detail = () => {
       },
     },
     {
+      label: "よくある質問",
+      iconLib: Feather,
+      iconName: "help-circle",
+      onPress: () => {
+        router.replace("/main/faq");
+      },
+    },
+    {
       label: "分析",
       iconLib: Feather,
       iconName: "activity",

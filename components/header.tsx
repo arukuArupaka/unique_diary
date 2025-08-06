@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { router, usePathname } from "expo-router";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
@@ -27,20 +27,17 @@ const Header = () => {
         height: "10%",
         flexDirection: "row",
         gap: "5%",
-        // backgroundColor: "#f0f8ff", //#e0ffff別の候補 #bfe4ff
         paddingTop: "12%",
-        // borderBottomWidth: 3,
-        // borderColor: "#ccc",
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 3,
       }}
     >
-      {pathname === "/main/set-passcode" || pathname === "/main/analyze" ? (
+      {pathname === "/main/set-passcode" ||
+      pathname === "/main/analyze" ||
+      pathname === "/main/faq" ? (
         <TouchableOpacity
-          style={{
-            marginLeft: 3,
-          }}
+          style={{ marginLeft: 3 }}
           onPress={() => {
             router.back();
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -60,7 +57,7 @@ const Header = () => {
             elevation: 3,
           }}
         >
-          {todayString} {/* 今日の日付を表示 */}
+          {todayString}
         </Text>
       )}
     </LinearGradient>
