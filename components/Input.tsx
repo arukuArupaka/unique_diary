@@ -481,6 +481,7 @@ const Input = () => {
                   maskElement={
                     <View
                       style={{
+                        marginLeft: 12,
                         flex: 1,
                         justifyContent: "center",
                         alignItems: "center",
