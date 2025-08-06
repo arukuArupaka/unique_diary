@@ -22,9 +22,9 @@ const ContionuousIcon = () => {
     if (streak < 11) return ["purple", "#8A2BE2"]; // 紫
     return ["#00FFFF", "#00BFFF"]; // 青
   };
-  // useEffect(() => {
-  //   setStreak(14); // 一時的に数字をいじれる
-  // }, []);
+  useEffect(() => {
+    setStreak(1); // 一時的に数字をいじれる
+  }, []);
   const { streak, setStreak } = useStreak(0);
 
   const iconSize = streak < 14 ? 50 + streak * 5 : 120;
